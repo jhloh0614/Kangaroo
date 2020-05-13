@@ -5,20 +5,34 @@ public class Path {
     private String pathid;
     private Point p;
     private String source;
-    private String obstacleHeight;
+    private Integer obstacleheight;
 
-    public Path(String source, Point p, String obstacleHeight, String pathid) {
+    public Path(String source, Point p, String pathid) {
         this.source = source;
         this.p = p;
-        this.obstacleHeight = obstacleHeight;
         this.pathid = pathid;
+    }
+
+    public Path(String source, Point p, String pathid, Integer obstacleheight) {
+        this.source = source;
+        this.p = p;
+        this.pathid = pathid;
+        this.obstacleheight = obstacleheight;
+    }
+
+    public Integer getObstacleheight() {
+        return obstacleheight;
+    }
+
+    public void setObstacleheight(Integer obstacleheight) {
+        this.obstacleheight = obstacleheight;
     }
 
     public String toString() {
         return "Source: " + source
                 + "\nPoint: " + p.toString()
-                +"\nObstacle Height: " +obstacleHeight 
-                + "\nPath ID: " + pathid;
+                + "\nPath ID: " + pathid.toString()
+                + "\nObstacle Height: " + obstacleheight;
     }
 
     public String getPathid() {
@@ -45,11 +59,4 @@ public class Path {
         this.source = source;
     }
 
-    public String getObstacleHeight() {
-        return obstacleHeight;
-    }
-
-    public void setObstacleHeight(String obstacleHeight) {
-        this.obstacleHeight = obstacleHeight;
-    }      
 }
