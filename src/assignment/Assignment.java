@@ -1,6 +1,6 @@
 package assignment;
 
-import java.util.LinkedList;
+import com.sun.prism.paint.Paint;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -25,18 +25,20 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.converter.IntegerStringConverter;
 
 public class Assignment extends Application {
 
-    public Point2D point[][];
+    public static Point2D point[][];
     public int ptno;
     private TableView table = new TableView();
-    ObservableList<Point> points = FXCollections.observableArrayList();
+    static ObservableList<Point> points = FXCollections.observableArrayList();
     private boolean donesetpoint;
     private TableView pathtable = new TableView();
     ObservableList<Point> pathlist = FXCollections.observableArrayList();
     ObservableList<Path> pathtablelist = FXCollections.observableArrayList();
     private int rowno;
+    private int ptnoconstant;
 
     @Override
     public void start(Stage primaryStage) {
@@ -71,9 +73,9 @@ public class Assignment extends Application {
                 size.setMinWidth(200);
                 path.setMinWidth(250);
                 id.setCellValueFactory(new PropertyValueFactory<Point, String>("id"));
-                food.setCellValueFactory(new PropertyValueFactory<Point, Integer>("food"));
-                size.setCellValueFactory(new PropertyValueFactory<Point, String>("size"));
-                path.setCellValueFactory(new PropertyValueFactory<Point, String>("path"));
+                food.setCellValueFactory(new PropertyValueFactory<Point, String>("food"));
+                size.setCellValueFactory(new PropertyValueFactory<Point, Integer>("size"));
+                path.setCellValueFactory(new PropertyValueFactory<Point, Integer>("path"));
                 table.setEditable(true);
                 id.setCellFactory(TextFieldTableCell.forTableColumn());
                 id.setOnEditCommit(
@@ -87,12 +89,12 @@ public class Assignment extends Application {
                 );
 //                food.setCellFactory(TextFieldTableCell.forTableColumn());
 //                food.setOnEditCommit(
-//                        new EventHandler<CellEditEvent<Point, Integer>>() {
+//                        new EventHandler<CellEditEvent<Point, String>>() {
 //                    @Override
-//                    public void handle(CellEditEvent<Point, Integer> t) {
-//                        Integer val = t.getNewValue();
+//                    public void handle(CellEditEvent<Point, String> t) {
+//                        Integer val = Integer.parseInt(t.getNewValue());
 //                        ((Point) t.getTableView().getItems().get(
-//                                t.getTablePosition().getRow())).setFood(t.getNewValue());
+//                                t.getTablePosition().getRow())).setFood(val);
 //                    }
 //                }
 //                );
@@ -130,7 +132,7 @@ public class Assignment extends Application {
                 pathinput.setMinWidth(150);
                 Button add = new Button("Add");
                 HBox hb = new HBox();
-                final int ptnoconstant = ptno;
+                ptnoconstant = ptno;
 
                 add.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
@@ -155,6 +157,17 @@ public class Assignment extends Application {
                                 return;
                             }
                         }
+                        if (Integer.parseInt(pathinput.getText()) >= ptnoconstant) {
+                            Alert exceeded = new Alert(Alert.AlertType.WARNING);
+                            exceeded.setTitle("Error");
+                            exceeded.setHeaderText("Number of path should be less than total number of points which is " + ptnoconstant);
+                            exceeded.showAndWait();
+                            idinput.clear();
+                            foodinput.clear();
+                            sizeinput.clear();
+                            pathinput.clear();
+                            return;
+                        }
                         points.add(new Point(idinput.getText(),
                                 Integer.parseInt(foodinput.getText()),
                                 Integer.parseInt(sizeinput.getText()),
@@ -172,68 +185,82 @@ public class Assignment extends Application {
                         pathinput, add, ok);
                 hb.setSpacing(5);
                 ok.setOnAction(new EventHandler<ActionEvent>() {
+
                     private int index = 0;
                     private int entry = 0;
 
                     @Override
                     public void handle(ActionEvent e) {
+                        stage.close();
                         if (rowno == ptnoconstant) {
                             Stage pathstage = new Stage();
                             HBox pathhb = new HBox();
                             TableColumn sourceid = new TableColumn("Source ID");
                             TableColumn link = new TableColumn("Linked to");
-                            TableColumn obstacleHeight = new TableColumn("Obstacle Height");
                             TableColumn pathid = new TableColumn("Path ID");
-
+                            TableColumn obstacleheight = new TableColumn("Obstacle Height");
 //                            sourceid.setCellValueFactory(new PropertyValueFactory<Point, String>("id"));
 //                            link.setCellValueFactory(new PropertyValueFactory<Point, LinkedList<Point>>("link"));
 //                            pathid.setCellValueFactory(new PropertyValueFactory<Point, LinkedList<String>>("pathid"));
                             sourceid.setCellValueFactory(new PropertyValueFactory<Path, String>("source"));
                             link.setCellValueFactory(new PropertyValueFactory<Path, Point>("p"));
-                            obstacleHeight.setCellValueFactory(new PropertyValueFactory<Path, String>("obstacleHeight"));
                             pathid.setCellValueFactory(new PropertyValueFactory<Path, String>("pathid"));
+                            obstacleheight.setCellValueFactory(new PropertyValueFactory<Path, Integer>("obstacleheight"));
+
                             sourceid.setMinWidth(150);
-                            link.setMinWidth(150);
-                            obstacleHeight.setMinWidth(100);
+                            link.setMinWidth(200);
                             pathid.setMinWidth(100);
+                            obstacleheight.setMinWidth(200);
+
                             pathtable.setEditable(true);
 
                             TextField sourceidinput = new TextField();
                             TextField ptconnected = new TextField();
-                            TextField heightInput = new TextField();
                             TextField ptid = new TextField();
+                            TextField obstacleheightinput = new TextField();
+
                             ptconnected.setPromptText("Point Connected");
                             ptid.setPromptText("Path ID");
-                            heightInput.setPromptText("Obstacle Height");
+                            obstacleheightinput.setPromptText("Obstacle Height");
+
                             Button addpath = new Button("Add path");
                             sourceidinput.setText(points.get(index).getId());
                             sourceidinput.setEditable(false);
+
+                            Button ok = new Button("OK");
+                            ok.setOnAction(new EventHandler<ActionEvent>() {
+                                public void handle(ActionEvent e) {
+                                    pathstage.close();
+                                    start();
+                                }
+                            });
+
                             addpath.setOnAction(new EventHandler<ActionEvent>() {
                                 @Override
                                 public void handle(ActionEvent e) {
                                     if (entry < points.get(index).getPath()) {
-                                        String source = sourceidinput.getText();
+                                        String obstacleheight = obstacleheightinput.getText();
                                         String destination = ptconnected.getText();
-                                        String heightOutput = heightInput.getText();
                                         String pathtable_pathid = ptid.getText();
 
                                         Point p = null;
                                         Path path = null;
 
                                         for (int i = 0, a = points.size(); i < a; i++) {
-
                                             if (points.get(i).getPathid().contains(pathtable_pathid)) {
                                                 Alert redundant = new Alert(Alert.AlertType.WARNING);
                                                 redundant.setTitle("Error");
                                                 redundant.setHeaderText("Redundant Path ID");
                                                 redundant.showAndWait();
+                                                obstacleheightinput.clear();
                                                 ptconnected.clear();
                                                 ptid.clear();
                                                 return;
                                             }
                                             if (points.get(i).getId().equals(destination)) {
                                                 p = points.get(i);
-                                                path = new Path(sourceidinput.getText(), points.get(i), heightOutput, pathtable_pathid);
+                                                path = new Path(sourceidinput.getText(), points.get(i), pathtable_pathid,
+                                                        Integer.parseInt(obstacleheight));
                                                 break;
                                             }
                                             if (i == points.size() - 1 && !points.get(i).getId().equals(destination)) {
@@ -243,32 +270,58 @@ public class Assignment extends Application {
                                                 xexist.showAndWait();
                                                 ptconnected.clear();
                                                 ptid.clear();
+                                                obstacleheightinput.clear();
                                                 return;
                                             }
 
                                         }
 
+                                        boolean repeat = false;
+                                        if (points.get(index).getId().equals(path.getP().getId())) {
+                                            repeat = true;
+                                        }
+                                        for (int i = 0; i < points.get(index).getLink().size(); i++) {
+                                            if (points.get(index).getLink().get(i).equals(path.getP())) {
+                                                repeat = true;
+                                                break;
+                                            }
+                                        }
+                                        if (repeat) {
+                                            Alert repeatpath = new Alert(Alert.AlertType.WARNING);
+                                            repeatpath.setTitle("Repeated Path");
+                                            repeatpath.setHeaderText("Repeated Path");
+                                            repeatpath.showAndWait();
+                                            ptconnected.clear();
+                                            ptid.clear();
+                                            obstacleheightinput.clear();
+                                            return;
+                                        } else {
+                                            points.get(index).setLink(p, pathtable_pathid);
+                                        }
+                                        ptconnected.clear();
+                                        ptid.clear();
+                                        obstacleheightinput.clear();
                                         pathtablelist.add(path);
                                         pathlist.add(p);
                                         entry++;
-                                        System.out.println(pathtablelist.toString());
-//                                        pathlist.add(new Point(source, destination, pathtable_pathid));
-                                        points.get(index).setLink(p, pathtable_pathid);
-                                        ptconnected.clear();
-                                        heightInput.clear();
-                                        ptid.clear();
                                         if (entry == points.get(index).getPath()) {
                                             index++;
-                                            sourceidinput.clear();
-                                            //Source id bug
-                                            sourceidinput.setText(points.get(index).getId());
                                             entry = 0;
+                                            if (index < points.size()) {
+                                                sourceidinput.clear();
+                                                sourceidinput.setText(points.get(index).getId());
+
+                                            } else {
+                                                ptconnected.setEditable(false);
+                                                ptid.setEditable(false);
+                                                obstacleheightinput.setEditable(false);
+                                                sourceidinput.clear();
+                                            }
                                         }
 
                                     } else {
                                         if (entry == points.get(index).getPath()) {
                                             index++;
-                                            System.out.println(index);
                                             sourceidinput.clear();
                                             sourceidinput.setText(points.get(index).getId());
                                             entry = 0;
@@ -284,9 +337,10 @@ public class Assignment extends Application {
                             });
 
                             pathtable.setItems(pathtablelist);
-                            pathtable.getColumns().addAll(sourceid, link, obstacleHeight, pathid);
+                            pathtable.getColumns().addAll(sourceid, link, pathid, obstacleheight);
 
-                            pathhb.getChildren().addAll(sourceidinput, ptconnected, heightInput, ptid, addpath);
+                            pathhb.getChildren().addAll(sourceidinput, ptconnected, ptid,
+                                    obstacleheightinput, addpath, ok);
                             pathhb.setSpacing(5);
 
                             final VBox pathvb = new VBox();
@@ -300,10 +354,12 @@ public class Assignment extends Application {
                             pathstage.setScene(pathscene);
                             pathstage.setResizable(false);
                             pathstage.show();
+
                             pathstage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                                 @Override
                                 public void handle(WindowEvent t) {
                                     pathstage.close();
+
                                 }
                             });
                         }
@@ -320,6 +376,7 @@ public class Assignment extends Application {
                 vbox.getChildren().addAll(table, hb);
                 Scene scene = new Scene(new Group());
                 ((Group) scene.getRoot()).getChildren().addAll(vbox);
+
                 stage.setResizable(false);
                 stage.setTitle("Point(s) Data");
                 stage.setScene(scene);
@@ -341,7 +398,7 @@ public class Assignment extends Application {
 
         primaryStage.setTitle("Kangaroo");
         primaryStage.setResizable(false);
-
+//        primaryStage.getIcons().add(new Image("kangaroo-icon.png"));
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -355,6 +412,16 @@ public class Assignment extends Application {
 
     public static void main(String[] args) {
         launch(args);
+
+    }
+
+    public static void start() {
+        point = new Point2D[points.size() + 1][points.size() + 1];
+        StackPane root = new StackPane();
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
 
     }
 
