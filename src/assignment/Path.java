@@ -6,6 +6,7 @@ public class Path {
     //Second test
     //Pull test 
     //Edit test
+    //Clone test
     
     private String pathid;
     private Point p;
