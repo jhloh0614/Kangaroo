@@ -1,18 +1,7 @@
 package assignment;
 
 public class Path {
-    
-    //Testing commit
-    //Second test
-    //Pull test 
-    //Edit test
-    //Clone test
-    //Hi beejssss
-    //Why cant push
-    //Testing 2
-    //hi beeejejeejjejej
-    
-    //try to push
+    //testing
     private String pathid;
     private Point p;
     private String source;
