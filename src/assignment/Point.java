@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package assignment;
 
 import java.util.LinkedList;
@@ -15,6 +10,31 @@ public class Point {
     private LinkedList<String> pathid = new LinkedList<>();
     private int count = 0;
 
+    public LinkedList<Point> getLink() {
+        return link;
+    }
+
+    public void setLink(LinkedList<Point> link) {
+        this.link = link;
+    }
+
+    public LinkedList<String> getPathid() {
+        return pathid;
+    }
+
+    public void setPathid(LinkedList<String> pathid) {
+        this.pathid = pathid;
+    }
+
+    public void setLink(Point destination, String pathid) {
+        if (!linkFull()) {
+            link.add(destination);
+            this.pathid.add(pathid);
+        } else {
+            System.out.println("The path is full");
+        }
+    }
+
     public void setLink(String source, String destination, String pathid) {
         this.id = source;
         if (!linkFull()) {
@@ -25,6 +45,11 @@ public class Point {
             System.out.println("The path is full");
         }
 
+    }
+
+    public Point(Point point, String pathid) {
+        this.pathid.add(pathid);
+        link.add(point);
     }
 
     public Point(String source, String destination, String pathid) {
@@ -55,7 +80,7 @@ public class Point {
 //        }
 //    }
     public boolean linkFull() {
-        return count == path;
+        return count == path || pathid.size() == path || link.size() == path;
     }
 
     public String toString() {
@@ -97,28 +122,4 @@ public class Point {
         this.id = id;
     }
 
-    public LinkedList<Point> getLink() {
-        return link;
-    }
-
-    public void setLink(LinkedList<Point> link) {
-        this.link = link;
-    }
-
-    public LinkedList<String> getPathid() {
-        return pathid;
-    }
-
-    public void setPathid(LinkedList<String> pathid) {
-        this.pathid = pathid;
-    }
-
-    public void setLink(Point destination, String pathid) {
-        if (!linkFull()) {
-            link.add(destination);
-            this.pathid.add(pathid);
-        } else {
-            System.out.println("The path is full");
-        }
-    }
 }
