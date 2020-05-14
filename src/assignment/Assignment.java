@@ -1,6 +1,9 @@
 package assignment;
 
-import com.sun.prism.paint.Paint;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Random;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -23,20 +26,22 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javafx.util.converter.IntegerStringConverter;
 
 public class Assignment extends Application {
 
-    public static Point2D point[][];
-    public int ptno;
+    private static Point2D point[][];
+    private int ptno;
     private TableView table = new TableView();
     static ObservableList<Point> points = FXCollections.observableArrayList();
     private boolean donesetpoint;
     private TableView pathtable = new TableView();
-    ObservableList<Point> pathlist = FXCollections.observableArrayList();
-    ObservableList<Path> pathtablelist = FXCollections.observableArrayList();
+    static ObservableList<Point> pathlist = FXCollections.observableArrayList();
+    static ObservableList<Path> pathtablelist = FXCollections.observableArrayList();
     private int rowno;
     private int ptnoconstant;
 
@@ -162,9 +167,6 @@ public class Assignment extends Application {
                             exceeded.setTitle("Error");
                             exceeded.setHeaderText("Number of path should be less than total number of points which is " + ptnoconstant);
                             exceeded.showAndWait();
-                            idinput.clear();
-                            foodinput.clear();
-                            sizeinput.clear();
                             pathinput.clear();
                             return;
                         }
@@ -245,7 +247,18 @@ public class Assignment extends Application {
 
                                         Point p = null;
                                         Path path = null;
-
+                                        for (int i = 0; i < pathtablelist.size(); i++) {
+                                            if(pathtable_pathid.equals(pathtablelist.get(i).getPathid())){
+                                                Alert redundant = new Alert(Alert.AlertType.WARNING);
+                                                redundant.setTitle("Error");
+                                                redundant.setHeaderText("Redundant Path ID");
+                                                redundant.showAndWait();
+                                                obstacleheightinput.clear();
+                                                ptconnected.clear();
+                                                ptid.clear();
+                                                return;
+                                            }
+                                        }
                                         for (int i = 0, a = points.size(); i < a; i++) {
                                             if (points.get(i).getPathid().contains(pathtable_pathid)) {
                                                 Alert redundant = new Alert(Alert.AlertType.WARNING);
@@ -417,10 +430,33 @@ public class Assignment extends Application {
 
     public static void start() {
         point = new Point2D[points.size() + 1][points.size() + 1];
+        LinkedList<Circle> circle = new LinkedList<>();
+        Random r = new Random();
+        ArrayList<Integer> x = new ArrayList<>();
+        ArrayList<Integer> y = new ArrayList<>();
+        for (int i = 1; i <= points.size(); i++) {
+            x.add(i);
+            y.add(i);
+        }
+        Collections.shuffle(x);
+        Collections.shuffle(y);
+        Line l[] = new Line[pathtablelist.size()];
+        for (int i = 0; i < points.size(); i++) {
+            Circle c = new Circle();
+            c.setVisible(true);
+            c.setRadius(10);
+            c.setFill(Color.AQUA);
+            c.setCenterX(x.get(i));
+            c.setCenterY(y.get(i));
+            circle.add(c);
+        }
         StackPane root = new StackPane();
+        root.getChildren().addAll(circle);
         Stage stage = new Stage();
         Scene scene = new Scene(root);
+        
         stage.setScene(scene);
+        stage.setMaximized(true);
         stage.show();
 
     }
