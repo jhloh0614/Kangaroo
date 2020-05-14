@@ -467,47 +467,36 @@ public class Assignment extends Application {
         color.add(Color.MEDIUMTURQUOISE);
         color.add(Color.FORESTGREEN);
         color.add(Color.MISTYROSE);
-        ArrayList<Integer> used = new ArrayList<>();
+        ArrayList<Integer> usedx = new ArrayList<>();
+        ArrayList<Integer> usedy = new ArrayList<>();
         int xMaxSize = 1601;
         int yMaxSize = 801;
         int radius = 50;
+        int pathlength = 150;
         for (int i = 0; i < points.size(); i++) {
-            boolean checkOverlap = false;
-            int n = 0;
+            boolean checkOverlap;
+            int xcoord = 0;
+            int ycoord = 0;
             do {
-                n = r.nextInt(xMaxSize) + 200;
-                for (int j = 0; j < used.size(); j++) {
-                    if (Math.abs(n - used.get(j)) < radius) {
+                checkOverlap = false;
+                xcoord = r.nextInt(xMaxSize) + 200;
+                ycoord = r.nextInt(yMaxSize) + 100;
+                for (int j = 0; j < usedx.size(); j++) {
+                    double distance = Math.sqrt(Math.pow((xcoord-usedx.get(j)), 2) + 
+                            Math.pow((ycoord-usedx.get(j)), 2));
+                    if (distance < radius + pathlength) {
                         checkOverlap = true;
                         break;
-                    } else {
-                        checkOverlap = false;
                     }
                 }
 
             } while (checkOverlap);
-            used.add(n);
-            x.add(n);
+            usedx.add(xcoord);
+            usedy.add(ycoord);
+            x.add(xcoord);
+            y.add(ycoord);
         }
-        used = new ArrayList<>();
-        for (int i = 0; i < points.size(); i++) {
-            boolean checkOverlap = false;
-            int n = 0;
-            do {
-                n = r.nextInt(yMaxSize) + 100;
-                for (int j = 0; j < used.size(); j++) {
-                    if (Math.abs(n - used.get(j)) < radius) {
-                        checkOverlap = true;
-                        break;
-                    } else {
-                        checkOverlap = false;
-                    }
-                }
-
-            } while (checkOverlap);
-            used.add(n);
-            y.add(n);
-        }
+       
         Collections.shuffle(color);
         Line l[] = new Line[pathtablelist.size()];
         for (int i = 0; i < points.size(); i++) {
@@ -516,21 +505,10 @@ public class Assignment extends Application {
             System.out.println("x: " + x.get(i));
             System.out.println("y: " + y.get(i));
             c.setVisible(true);
-            c.setRadius(50);
+            c.setRadius(radius);
             c.setFill(color.get(i % 5));
             c.setCenterX(x.get(i));
             c.setCenterY(y.get(i));
-//            for (int j = 0; j < i; j++) {
-//                if (circle.get(j).getCenterX() + 150 <= c.getCenterX()
-//                        || circle.get(j).getCenterY() + 150 <= c.getCenterY()) {
-//                    crash = true;
-//                    break;
-//                }
-//            }
-//            if (crash) {
-//                i--;
-//                continue;
-//            }
             circle.add(c);
         }
         Pane pane = new Pane();
