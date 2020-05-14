@@ -470,30 +470,51 @@ public class Assignment extends Application {
         ArrayList<Integer> used = new ArrayList<>();
         int xMaxSize = 1601;
         int yMaxSize = 801;
+        int radius = 50;
         for (int i = 0; i < points.size(); i++) {
-            int n = r.nextInt(xMaxSize) + 200;
-            while (used.contains(n)) {
+            boolean checkOverlap = false;
+            int n = 0;
+            do {
                 n = r.nextInt(xMaxSize) + 200;
-            }
+                for (int j = 0; j < used.size(); j++) {
+                    if (Math.abs(n - used.get(j)) < radius) {
+                        checkOverlap = true;
+                        break;
+                    } else {
+                        checkOverlap = false;
+                    }
+                }
+
+            } while (checkOverlap);
             used.add(n);
             x.add(n);
         }
         used = new ArrayList<>();
         for (int i = 0; i < points.size(); i++) {
-            int n = r.nextInt(yMaxSize)+100;
-            while (used.contains(n)) {
-                n = r.nextInt(yMaxSize)+100;
-            }
+            boolean checkOverlap = false;
+            int n = 0;
+            do {
+                n = r.nextInt(yMaxSize) + 100;
+                for (int j = 0; j < used.size(); j++) {
+                    if (Math.abs(n - used.get(j)) < radius) {
+                        checkOverlap = true;
+                        break;
+                    } else {
+                        checkOverlap = false;
+                    }
+                }
+
+            } while (checkOverlap);
             used.add(n);
             y.add(n);
         }
         Collections.shuffle(color);
         Line l[] = new Line[pathtablelist.size()];
         for (int i = 0; i < points.size(); i++) {
-            boolean crash = false;
+
             Circle c = new Circle();
-            System.out.println("x: "+x.get(i));
-            System.out.println("y: "+y.get(i));
+            System.out.println("x: " + x.get(i));
+            System.out.println("y: " + y.get(i));
             c.setVisible(true);
             c.setRadius(50);
             c.setFill(color.get(i % 5));
