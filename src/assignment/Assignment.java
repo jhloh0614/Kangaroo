@@ -457,20 +457,27 @@ public class Assignment extends Application {
         Random r = new Random();
         ArrayList<Integer> x = new ArrayList<>();
         ArrayList<Integer> y = new ArrayList<>();
+        ArrayList<Color> color = new ArrayList<>();
+        color.add(Color.BLUEVIOLET);
+        color.add(Color.SALMON);
+        color.add(Color.MEDIUMTURQUOISE);
+        color.add(Color.FORESTGREEN);
+        color.add(Color.MISTYROSE);
+        
         for (int i = 100; i <= 350; i++) {
+            
             x.add(i);
             y.add(i);
         }
         Collections.shuffle(x);
         Collections.shuffle(y);
+        Collections.shuffle(color);
         Line l[] = new Line[pathtablelist.size()];
         for (int i = 0; i < points.size(); i++) {
-            System.out.println("X: " + x.get(i));
-            System.out.println("Y: " + y.get(i));
             Circle c = new Circle();
             c.setVisible(true);
-            c.setRadius(20);
-            c.setFill(Color.AQUA);
+            c.setRadius(50);
+            c.setFill(color.get(i%5));
             c.setCenterX(x.get(i));
             c.setCenterY(y.get(i));
             circle.add(c);
