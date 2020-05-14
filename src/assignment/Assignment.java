@@ -485,8 +485,8 @@ public class Assignment extends Application {
                 xcoord = r.nextInt(xMaxSize) + 200;
                 ycoord = r.nextInt(yMaxSize) + 100;
                 for (int j = 0; j < x.size(); j++) {
-                    double distance = Math.sqrt(Math.pow((xcoord-x.get(j)), 2) + 
-                            Math.pow((ycoord-y.get(j)), 2));
+                    double distance = Math.sqrt(Math.pow((xcoord - x.get(j)), 2)
+                            + Math.pow((ycoord - y.get(j)), 2));
                     if (distance < radius + pathlength) {
                         checkOverlap = true;
                         break;
@@ -497,7 +497,7 @@ public class Assignment extends Application {
             x.add(xcoord);
             y.add(ycoord);
         }
-       
+
         Collections.shuffle(color);
         for (int i = 0; i < points.size(); i++) {
             Circle c = new Circle();
@@ -512,8 +512,13 @@ public class Assignment extends Application {
         }
         for (int i = 0; i < points.size(); i++) {
             Line l = new Line();
-            l.setStartX(x.get(i));
-            l.setStartY(y.get(i));
+            if (points.get(i).getPath() != 0) {
+                l.setStartX(x.get(i));
+                l.setStartY(y.get(i));
+            }
+            else{
+                continue;
+            }
             for (int j = 0; j < points.get(i).getLink().size(); j++) {
                 l.setEndX(points.get(i).getLink().get(j).getX());
                 l.setEndY(points.get(i).getLink().get(j).getY());
@@ -526,6 +531,7 @@ public class Assignment extends Application {
         pane.getChildren().addAll(line);
         Stage stage = new Stage();
         stage.setMaximized(true);
+        stage.setTitle("Kangaroo");
         Scene scene = new Scene(pane);
         scene.setFill(Color.YELLOWGREEN);
         stage.setScene(scene);
