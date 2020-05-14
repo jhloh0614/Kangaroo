@@ -24,6 +24,7 @@ import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -434,7 +435,7 @@ public class Assignment extends Application {
         Random r = new Random();
         ArrayList<Integer> x = new ArrayList<>();
         ArrayList<Integer> y = new ArrayList<>();
-        for (int i = 1; i <= points.size(); i++) {
+        for (int i = 1; i <= 50; i++) {
             x.add(i);
             y.add(i);
         }
@@ -442,18 +443,20 @@ public class Assignment extends Application {
         Collections.shuffle(y);
         Line l[] = new Line[pathtablelist.size()];
         for (int i = 0; i < points.size(); i++) {
+            System.out.println("X: "+x.get(i));
+            System.out.println("Y: "+y.get(i));
             Circle c = new Circle();
             c.setVisible(true);
-            c.setRadius(10);
+            c.setRadius(20);
             c.setFill(Color.AQUA);
             c.setCenterX(x.get(i));
             c.setCenterY(y.get(i));
             circle.add(c);
         }
-        StackPane root = new StackPane();
-        root.getChildren().addAll(circle);
+        Pane pane = new Pane();
+        pane.getChildren().addAll(circle);
         Stage stage = new Stage();
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(pane);
         
         stage.setScene(scene);
         stage.setMaximized(true);
