@@ -394,6 +394,8 @@ public class Assignment extends Application {
                             pathstage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                                 @Override
                                 public void handle(WindowEvent t) {
+                                    pathtablelist.clear();
+                                    pathlist.clear();
                                     pathstage.close();
 
                                 }
@@ -421,6 +423,7 @@ public class Assignment extends Application {
                 stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                     @Override
                     public void handle(WindowEvent t) {
+                        points.clear();
                         stage.close();
                     }
                 });
@@ -452,6 +455,7 @@ public class Assignment extends Application {
     }
 
     public static void start() {
+        
         point = new Point2D[points.size() + 1][points.size() + 1];
         LinkedList<Circle> circle = new LinkedList<>();
         Random r = new Random();
@@ -463,32 +467,43 @@ public class Assignment extends Application {
         color.add(Color.MEDIUMTURQUOISE);
         color.add(Color.FORESTGREEN);
         color.add(Color.MISTYROSE);
-        
-        for (int i = 100; i <= 350; i++) {
-            
-            x.add(i);
-            y.add(i);
+        for (int i = 100; i <= 500; i++) {
+            x.add(r.nextInt(20000));
+            y.add(r.nextInt(20000));
         }
         Collections.shuffle(x);
         Collections.shuffle(y);
         Collections.shuffle(color);
         Line l[] = new Line[pathtablelist.size()];
         for (int i = 0; i < points.size(); i++) {
+            boolean crash = false;
             Circle c = new Circle();
             c.setVisible(true);
             c.setRadius(50);
             c.setFill(color.get(i%5));
             c.setCenterX(x.get(i));
             c.setCenterY(y.get(i));
+            for (int j = 0; j < i; j++) {
+                if(circle.get(j).getCenterX()+150 <= c.getCenterX() ||
+                        circle.get(j).getCenterY() + 150 <= c.getCenterY()){
+                    crash = true;
+                    break;
+                }
+            }
+            if(crash){
+                i--;
+                continue;
+            }
             circle.add(c);
         }
         Pane pane = new Pane();
         pane.getChildren().addAll(circle);
         Stage stage = new Stage();
+        stage.setMaximized(true);
         Scene scene = new Scene(pane);
 
         stage.setScene(scene);
-        stage.setMaximized(true);
+        
         stage.show();
 
     }
