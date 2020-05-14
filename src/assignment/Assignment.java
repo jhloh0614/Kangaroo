@@ -455,7 +455,7 @@ public class Assignment extends Application {
     }
 
     public static void start() {
-        
+
         point = new Point2D[points.size() + 1][points.size() + 1];
         LinkedList<Circle> circle = new LinkedList<>();
         Random r = new Random();
@@ -467,33 +467,49 @@ public class Assignment extends Application {
         color.add(Color.MEDIUMTURQUOISE);
         color.add(Color.FORESTGREEN);
         color.add(Color.MISTYROSE);
-        for (int i = 100; i <= 500; i++) {
-            x.add(r.nextInt(20000));
-            y.add(r.nextInt(20000));
+        ArrayList<Integer> used = new ArrayList<>();
+        int xMaxSize = 1601;
+        int yMaxSize = 801;
+        for (int i = 0; i < points.size(); i++) {
+            int n = r.nextInt(xMaxSize) + 200;
+            while (used.contains(n)) {
+                n = r.nextInt(xMaxSize) + 200;
+            }
+            used.add(n);
+            x.add(n);
         }
-        Collections.shuffle(x);
-        Collections.shuffle(y);
+        used = new ArrayList<>();
+        for (int i = 0; i < points.size(); i++) {
+            int n = r.nextInt(yMaxSize)+100;
+            while (used.contains(n)) {
+                n = r.nextInt(yMaxSize)+100;
+            }
+            used.add(n);
+            y.add(n);
+        }
         Collections.shuffle(color);
         Line l[] = new Line[pathtablelist.size()];
         for (int i = 0; i < points.size(); i++) {
             boolean crash = false;
             Circle c = new Circle();
+            System.out.println("x: "+x.get(i));
+            System.out.println("y: "+y.get(i));
             c.setVisible(true);
             c.setRadius(50);
-            c.setFill(color.get(i%5));
+            c.setFill(color.get(i % 5));
             c.setCenterX(x.get(i));
             c.setCenterY(y.get(i));
-            for (int j = 0; j < i; j++) {
-                if(circle.get(j).getCenterX()+150 <= c.getCenterX() ||
-                        circle.get(j).getCenterY() + 150 <= c.getCenterY()){
-                    crash = true;
-                    break;
-                }
-            }
-            if(crash){
-                i--;
-                continue;
-            }
+//            for (int j = 0; j < i; j++) {
+//                if (circle.get(j).getCenterX() + 150 <= c.getCenterX()
+//                        || circle.get(j).getCenterY() + 150 <= c.getCenterY()) {
+//                    crash = true;
+//                    break;
+//                }
+//            }
+//            if (crash) {
+//                i--;
+//                continue;
+//            }
             circle.add(c);
         }
         Pane pane = new Pane();
@@ -503,7 +519,7 @@ public class Assignment extends Application {
         Scene scene = new Scene(pane);
 
         stage.setScene(scene);
-        
+
         stage.show();
 
     }
