@@ -467,12 +467,15 @@ public class Assignment extends Application {
         color.add(Color.MEDIUMTURQUOISE);
         color.add(Color.FORESTGREEN);
         color.add(Color.MISTYROSE);
-        ArrayList<Integer> usedx = new ArrayList<>();
-        ArrayList<Integer> usedy = new ArrayList<>();
+        color.add(Color.RED);
+        color.add(Color.LIGHTCORAL);
+        color.add(Color.LIGHTSLATEGREY);
+        color.add(Color.MEDIUMSLATEBLUE);
+        ArrayList<Line> line = new ArrayList<>();
         int xMaxSize = 1601;
         int yMaxSize = 801;
         int radius = 50;
-        int pathlength = 150;
+        int pathlength = 250;
         for (int i = 0; i < points.size(); i++) {
             boolean checkOverlap;
             int xcoord = 0;
@@ -481,9 +484,9 @@ public class Assignment extends Application {
                 checkOverlap = false;
                 xcoord = r.nextInt(xMaxSize) + 200;
                 ycoord = r.nextInt(yMaxSize) + 100;
-                for (int j = 0; j < usedx.size(); j++) {
-                    double distance = Math.sqrt(Math.pow((xcoord-usedx.get(j)), 2) + 
-                            Math.pow((ycoord-usedx.get(j)), 2));
+                for (int j = 0; j < x.size(); j++) {
+                    double distance = Math.sqrt(Math.pow((xcoord-x.get(j)), 2) + 
+                            Math.pow((ycoord-y.get(j)), 2));
                     if (distance < radius + pathlength) {
                         checkOverlap = true;
                         break;
@@ -491,32 +494,40 @@ public class Assignment extends Application {
                 }
 
             } while (checkOverlap);
-            usedx.add(xcoord);
-            usedy.add(ycoord);
             x.add(xcoord);
             y.add(ycoord);
         }
        
         Collections.shuffle(color);
-        Line l[] = new Line[pathtablelist.size()];
         for (int i = 0; i < points.size(); i++) {
-
             Circle c = new Circle();
-            System.out.println("x: " + x.get(i));
-            System.out.println("y: " + y.get(i));
             c.setVisible(true);
             c.setRadius(radius);
-            c.setFill(color.get(i % 5));
+            c.setFill(color.get(i % color.size()));
+            points.get(i).setX(x.get(i));
+            points.get(i).setY(y.get(i));
             c.setCenterX(x.get(i));
             c.setCenterY(y.get(i));
             circle.add(c);
         }
+        for (int i = 0; i < points.size(); i++) {
+            Line l = new Line();
+            l.setStartX(x.get(i));
+            l.setStartY(y.get(i));
+            for (int j = 0; j < points.get(i).getLink().size(); j++) {
+                l.setEndX(points.get(i).getLink().get(j).getX());
+                l.setEndY(points.get(i).getLink().get(j).getY());
+            }
+            l.setVisible(true);
+            line.add(l);
+        }
         Pane pane = new Pane();
         pane.getChildren().addAll(circle);
+        pane.getChildren().addAll(line);
         Stage stage = new Stage();
         stage.setMaximized(true);
         Scene scene = new Scene(pane);
-
+        scene.setFill(Color.YELLOWGREEN);
         stage.setScene(scene);
 
         stage.show();
