@@ -67,6 +67,7 @@ public class Assignment extends Application {
                     exception.setHeaderText("Invalid Input");
                     exception.showAndWait();
                     stage.close();
+                    return;
                 }
                 td1.close();
 
@@ -143,6 +144,17 @@ public class Assignment extends Application {
                 add.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent e) {
+                        if (idinput.getText().equals("")
+                                || pathinput.getText().equals("")
+                                || foodinput.getText().equals("")
+                                || sizeinput.getText().equals("")) {
+                            Alert incomplete = new Alert(Alert.AlertType.WARNING);
+                            incomplete.setTitle("Error");
+                            incomplete.setHeaderText("Incomplete data");
+                            incomplete.showAndWait();
+                            return;
+                        }
+
                         if (ptno < 1) {
                             Alert alert = new Alert(Alert.AlertType.WARNING);
                             alert.setTitle("Attention!");
@@ -241,6 +253,16 @@ public class Assignment extends Application {
                             addpath.setOnAction(new EventHandler<ActionEvent>() {
                                 @Override
                                 public void handle(ActionEvent e) {
+                                    if (obstacleheightinput.getText().equals("")
+                                            || ptconnected.getText().equals("")
+                                            || ptid.getText().equals("")) {
+                                        Alert incomplete = new Alert(Alert.AlertType.WARNING);
+                                        incomplete.setTitle("Error");
+                                        incomplete.setHeaderText("Incomplete data");
+                                        incomplete.showAndWait();
+                                        return;
+                                    }
+
                                     if (entry < points.get(index).getPath()) {
                                         String obstacleheight = obstacleheightinput.getText();
                                         String destination = ptconnected.getText();
@@ -249,7 +271,7 @@ public class Assignment extends Application {
                                         Point p = null;
                                         Path path = null;
                                         for (int i = 0; i < pathtablelist.size(); i++) {
-                                            if(pathtable_pathid.equals(pathtablelist.get(i).getPathid())){
+                                            if (pathtable_pathid.equals(pathtablelist.get(i).getPathid())) {
                                                 Alert redundant = new Alert(Alert.AlertType.WARNING);
                                                 redundant.setTitle("Error");
                                                 redundant.setHeaderText("Redundant Path ID");
@@ -435,7 +457,7 @@ public class Assignment extends Application {
         Random r = new Random();
         ArrayList<Integer> x = new ArrayList<>();
         ArrayList<Integer> y = new ArrayList<>();
-        for (int i = 1; i <= 50; i++) {
+        for (int i = 100; i <= 350; i++) {
             x.add(i);
             y.add(i);
         }
@@ -443,8 +465,8 @@ public class Assignment extends Application {
         Collections.shuffle(y);
         Line l[] = new Line[pathtablelist.size()];
         for (int i = 0; i < points.size(); i++) {
-            System.out.println("X: "+x.get(i));
-            System.out.println("Y: "+y.get(i));
+            System.out.println("X: " + x.get(i));
+            System.out.println("Y: " + y.get(i));
             Circle c = new Circle();
             c.setVisible(true);
             c.setRadius(20);
@@ -457,7 +479,7 @@ public class Assignment extends Application {
         pane.getChildren().addAll(circle);
         Stage stage = new Stage();
         Scene scene = new Scene(pane);
-        
+
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
