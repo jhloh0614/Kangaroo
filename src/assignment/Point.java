@@ -9,7 +9,35 @@ public class Point {
     private LinkedList<Point> link = new LinkedList<>();
     private LinkedList<String> pathid = new LinkedList<>();
     private int count = 0;
+    private int x = 0;
+    private int y = 0;
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+    
+    
+    
     public LinkedList<Point> getLink() {
         return link;
     }
