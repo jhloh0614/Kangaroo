@@ -485,8 +485,6 @@ public class Assignment extends Application {
         color.add(Color.LIGHTSLATEGREY);
         color.add(Color.MEDIUMSLATEBLUE);
         ArrayList<Line> line = new ArrayList<>();
-        ArrayList<Rectangle> rect = new ArrayList<>();
-        ArrayList<Text> text = new ArrayList<>();
         ArrayList<Pane> figure = new ArrayList<>();
         int xMaxSize = 1601;
         int yMaxSize = 801;
