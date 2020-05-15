@@ -1,19 +1,19 @@
 package assignment;
 
-public class Path {
+public class PointPath {
     //testing
     private String pathid;
     private Point p;
     private String source;
     private Integer obstacleheight;
 
-    public Path(String source, Point p, String pathid) {
+    public PointPath(String source, Point p, String pathid) {
         this.source = source;
         this.p = p;
         this.pathid = pathid;
     }
 
-    public Path(String source, Point p, String pathid, Integer obstacleheight) {
+    public PointPath(String source, Point p, String pathid, Integer obstacleheight) {
         this.source = source;
         this.p = p;
         this.pathid = pathid;

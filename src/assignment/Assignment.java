@@ -30,6 +30,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -42,7 +44,7 @@ public class Assignment extends Application {
     private boolean donesetpoint;
     private TableView pathtable = new TableView();
     static ObservableList<Point> pathlist = FXCollections.observableArrayList();
-    static ObservableList<Path> pathtablelist = FXCollections.observableArrayList();
+    static ObservableList<PointPath> pathtablelist = FXCollections.observableArrayList();
     private int rowno;
     private int ptnoconstant;
 
@@ -217,10 +219,10 @@ public class Assignment extends Application {
 //                            sourceid.setCellValueFactory(new PropertyValueFactory<Point, String>("id"));
 //                            link.setCellValueFactory(new PropertyValueFactory<Point, LinkedList<Point>>("link"));
 //                            pathid.setCellValueFactory(new PropertyValueFactory<Point, LinkedList<String>>("pathid"));
-                            sourceid.setCellValueFactory(new PropertyValueFactory<Path, String>("source"));
-                            link.setCellValueFactory(new PropertyValueFactory<Path, Point>("p"));
-                            pathid.setCellValueFactory(new PropertyValueFactory<Path, String>("pathid"));
-                            obstacleheight.setCellValueFactory(new PropertyValueFactory<Path, Integer>("obstacleheight"));
+                            sourceid.setCellValueFactory(new PropertyValueFactory<PointPath, String>("source"));
+                            link.setCellValueFactory(new PropertyValueFactory<PointPath, Point>("p"));
+                            pathid.setCellValueFactory(new PropertyValueFactory<PointPath, String>("pathid"));
+                            obstacleheight.setCellValueFactory(new PropertyValueFactory<PointPath, Integer>("obstacleheight"));
 
                             sourceid.setMinWidth(150);
                             link.setMinWidth(200);
@@ -239,7 +241,12 @@ public class Assignment extends Application {
                             obstacleheightinput.setPromptText("Obstacle Height");
 
                             Button addpath = new Button("Add path");
+                            while (points.get(index).getPath() == 0) {
+                                index++;
+                            }
+
                             sourceidinput.setText(points.get(index).getId());
+
                             sourceidinput.setEditable(false);
 
                             Button ok = new Button("OK");
@@ -269,7 +276,7 @@ public class Assignment extends Application {
                                         String pathtable_pathid = ptid.getText();
 
                                         Point p = null;
-                                        Path path = null;
+                                        PointPath path = null;
                                         for (int i = 0; i < pathtablelist.size(); i++) {
                                             if (pathtable_pathid.equals(pathtablelist.get(i).getPathid())) {
                                                 Alert redundant = new Alert(Alert.AlertType.WARNING);
@@ -295,7 +302,7 @@ public class Assignment extends Application {
                                             }
                                             if (points.get(i).getId().equals(destination)) {
                                                 p = points.get(i);
-                                                path = new Path(sourceidinput.getText(), points.get(i), pathtable_pathid,
+                                                path = new PointPath(sourceidinput.getText(), points.get(i), pathtable_pathid,
                                                         Integer.parseInt(obstacleheight));
                                                 break;
                                             }
@@ -345,6 +352,12 @@ public class Assignment extends Application {
                                             entry = 0;
                                             if (index < points.size()) {
                                                 sourceidinput.clear();
+                                                while (points.get(index).getPath() == 0) {
+                                                    index++;
+                                                    if (index == points.size()) {
+                                                        return;
+                                                    }
+                                                }
                                                 sourceidinput.setText(points.get(index).getId());
 
                                             } else {
@@ -472,6 +485,9 @@ public class Assignment extends Application {
         color.add(Color.LIGHTSLATEGREY);
         color.add(Color.MEDIUMSLATEBLUE);
         ArrayList<Line> line = new ArrayList<>();
+        ArrayList<Rectangle> rect = new ArrayList<>();
+        ArrayList<Text> text = new ArrayList<>();
+        ArrayList<Pane> figure = new ArrayList<>();
         int xMaxSize = 1601;
         int yMaxSize = 801;
         int radius = 50;
@@ -501,6 +517,19 @@ public class Assignment extends Application {
         Collections.shuffle(color);
         for (int i = 0; i < points.size(); i++) {
             Circle c = new Circle();
+            Rectangle rt = new Rectangle();
+            Pane sp = new Pane();
+            Text t = new Text();
+            t.setX(x.get(i) - 5);
+            t.setY(y.get(i) + 5);
+            t.setText(points.get(i).getId());
+            rt.setX(x.get(i)- 20);
+            rt.setY(y.get(i) - 20);
+            rt.setVisible(true);
+            rt.setStrokeWidth(10);
+            rt.setWidth(radius - 10);
+            rt.setHeight(radius - 10);
+            rt.setFill(Color.ORANGE);
             c.setVisible(true);
             c.setRadius(radius);
             c.setFill(color.get(i % color.size()));
@@ -508,15 +537,20 @@ public class Assignment extends Application {
             points.get(i).setY(y.get(i));
             c.setCenterX(x.get(i));
             c.setCenterY(y.get(i));
+            c.setId(points.get(i).getId());
+            sp.getChildren().addAll(c);
+            sp.getChildren().addAll(rt);
+            sp.getChildren().addAll(t);
+            figure.add(sp);
             circle.add(c);
         }
+
         for (int i = 0; i < points.size(); i++) {
             Line l = new Line();
             if (points.get(i).getPath() != 0) {
                 l.setStartX(x.get(i));
                 l.setStartY(y.get(i));
-            }
-            else{
+            } else {
                 continue;
             }
             for (int j = 0; j < points.get(i).getLink().size(); j++) {
@@ -527,8 +561,9 @@ public class Assignment extends Application {
             line.add(l);
         }
         Pane pane = new Pane();
-        pane.getChildren().addAll(circle);
         pane.getChildren().addAll(line);
+//        pane.getChildren().addAll(circle);
+        pane.getChildren().addAll(figure);
         Stage stage = new Stage();
         stage.setMaximized(true);
         stage.setTitle("Kangaroo");
@@ -537,7 +572,13 @@ public class Assignment extends Application {
         stage.setScene(scene);
 
         stage.show();
-
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
     }
 
 }
