@@ -1,6 +1,7 @@
 package assignment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Random;
@@ -475,6 +476,7 @@ public class Assignment extends Application {
         ArrayList<Integer> x = new ArrayList<>();
         ArrayList<Integer> y = new ArrayList<>();
         ArrayList<Color> color = new ArrayList<>();
+        ArrayList<Integer[]> lineUsed = new ArrayList<>();
         color.add(Color.BLUEVIOLET);
         color.add(Color.SALMON);
         color.add(Color.MEDIUMTURQUOISE);
@@ -521,7 +523,7 @@ public class Assignment extends Application {
             t.setX(x.get(i) - 5);
             t.setY(y.get(i) + 5);
             t.setText(points.get(i).getId());
-            rt.setX(x.get(i)- 20);
+            rt.setX(x.get(i) - 20);
             rt.setY(y.get(i) - 20);
             rt.setVisible(true);
             rt.setStrokeWidth(10);
@@ -544,20 +546,74 @@ public class Assignment extends Application {
         }
 
         for (int i = 0; i < points.size(); i++) {
-            Line l = new Line();
+
+            int startX, startY, endX, endY;
             if (points.get(i).getPath() != 0) {
-                l.setStartX(x.get(i));
-                l.setStartY(y.get(i));
+                startX = x.get(i);
+                startY = y.get(i);
             } else {
                 continue;
             }
             for (int j = 0; j < points.get(i).getLink().size(); j++) {
-                l.setEndX(points.get(i).getLink().get(j).getX());
-                l.setEndY(points.get(i).getLink().get(j).getY());
+                Line l = new Line();
+                boolean sameLine = false;
+                endX = points.get(i).getLink().get(j).getX();
+                endY = points.get(i).getLink().get(j).getY();
+                for (int k = 0; k < lineUsed.size(); k++) {
+                    System.out.println("Array: " + Arrays.toString(lineUsed.get(k)));
+                    System.out.println("Points: " + startX + " " + startY + " " + endX + " " + endY);
+                    if (lineUsed.get(k)[0] == endX && lineUsed.get(k)[1] == endY
+                            && lineUsed.get(k)[2] == startX && lineUsed.get(k)[3] == startY) {
+                        sameLine = true;
+                        break;
+                    } 
+                }
+                //Check whether line already exists between 2 points
+                System.out.println("test : " + sameLine);
+                if (sameLine) {
+                    startX -= 20;
+                    startY -= 20;
+                    endX -= 20;
+                    endY -= 20;
+                } else {
+                    Integer[] temp = new Integer[4];
+                    temp[0] = startX;
+                    temp[1] = startY;
+                    temp[2] = endX;
+                    temp[3] = endY;
+                    lineUsed.add(temp);
+                    startX += 20;
+                    startY += 20;
+                    endX += 20;
+                    endY += 20;
+                }
+
+                l.setStartX(startX);
+                l.setStartY(startY);
+                l.setEndX(endX);
+                l.setEndY(endY);
+                l.setVisible(true);
+                line.add(l);
             }
-            l.setVisible(true);
-            line.add(l);
+
         }
+
+//        for (int i = 0; i < points.size(); i++) {
+//            Line l = new Line();
+//            System.out.println("test size i : " + points.size());
+//            if (points.get(i).getPath() != 0) {             
+//                l.setStartX(x.get(i));
+//                l.setStartY(y.get(i));
+//            } else {
+//                continue;
+//            }
+//            for (int j = 0; j < points.get(i).getLink().size(); j++) {          
+//                l.setEndX(points.get(i).getLink().get(j).getX());
+//                l.setEndY(points.get(i).getLink().get(j).getY());
+//            }
+//            l.setVisible(true);
+//            line.add(l);
+//        }
         Pane pane = new Pane();
         pane.getChildren().addAll(line);
 //        pane.getChildren().addAll(circle);
