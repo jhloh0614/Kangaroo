@@ -571,10 +571,10 @@ public class Assignment extends Application {
                 //Check whether line already exists between 2 points
                 System.out.println("test : " + sameLine);
                 if (sameLine) {
-                    startX -= 20;
-                    startY -= 20;
-                    endX -= 20;
-                    endY -= 20;
+                    startX -= 5;
+                    startY -= 5;
+                    endX -= 15;
+                    endY -= 15;
                 } else {
                     Integer[] temp = new Integer[4];
                     temp[0] = startX;
@@ -582,10 +582,10 @@ public class Assignment extends Application {
                     temp[2] = endX;
                     temp[3] = endY;
                     lineUsed.add(temp);
-                    startX += 20;
-                    startY += 20;
-                    endX += 20;
-                    endY += 20;
+                    startX += 5;
+                    startY += 5;
+                    endX += 15;
+                    endY += 15;
                 }
 
                 l.setStartX(startX);
