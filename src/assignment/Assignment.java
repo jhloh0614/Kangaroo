@@ -492,14 +492,24 @@ public class Assignment extends Application {
         int yMaxSize = 801;
         int radius = 50;
         int pathlength = 250;
+        System.out.println("point size: "+points.size());
         for (int i = 0; i < points.size(); i++) {
+            System.out.println("i: "+i);
             boolean checkOverlap;
             int xcoord = 0;
             int ycoord = 0;
             do {
                 checkOverlap = false;
-                xcoord = r.nextInt(xMaxSize) + 200;
-                ycoord = r.nextInt(yMaxSize) + 100;
+                              
+                if (i < points.size() / 2) {
+                    xcoord = r.nextInt(601) + 200;
+                    ycoord = r.nextInt(301) + 100;
+                } else {
+                    xcoord = r.nextInt(601) + 1200;
+                    ycoord = r.nextInt(301) + 600;
+                }
+//                xcoord = r.nextInt(xMaxSize) + 200;
+//                ycoord = r.nextInt(yMaxSize) + 100;
                 for (int j = 0; j < x.size(); j++) {
                     double distance = Math.sqrt(Math.pow((xcoord - x.get(j)), 2)
                             + Math.pow((ycoord - y.get(j)), 2));
@@ -566,7 +576,7 @@ public class Assignment extends Application {
                             && lineUsed.get(k)[2] == startX && lineUsed.get(k)[3] == startY) {
                         sameLine = true;
                         break;
-                    } 
+                    }
                 }
                 //Check whether line already exists between 2 points
                 System.out.println("test : " + sameLine);
