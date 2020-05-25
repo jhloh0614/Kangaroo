@@ -477,6 +477,8 @@ public class Assignment extends Application {
         ArrayList<Integer> y = new ArrayList<>();
         ArrayList<Color> color = new ArrayList<>();
         ArrayList<Integer[]> lineUsed = new ArrayList<>();
+        int[][] pointsCoord = new int[20][2];
+        ArrayList<Integer> usedCoord = new ArrayList<>();
         color.add(Color.BLUEVIOLET);
         color.add(Color.SALMON);
         color.add(Color.MEDIUMTURQUOISE);
@@ -492,36 +494,69 @@ public class Assignment extends Application {
         int yMaxSize = 801;
         int radius = 50;
         int pathlength = 250;
-        System.out.println("point size: "+points.size());
-        for (int i = 0; i < points.size(); i++) {
-            System.out.println("i: "+i);
-            boolean checkOverlap;
-            int xcoord = 0;
-            int ycoord = 0;
-            do {
-                checkOverlap = false;
-                              
-                if (i < points.size() / 2) {
-                    xcoord = r.nextInt(601) + 200;
-                    ycoord = r.nextInt(301) + 100;
-                } else {
-                    xcoord = r.nextInt(601) + 1200;
-                    ycoord = r.nextInt(301) + 600;
-                }
-//                xcoord = r.nextInt(xMaxSize) + 200;
-//                ycoord = r.nextInt(yMaxSize) + 100;
-                for (int j = 0; j < x.size(); j++) {
-                    double distance = Math.sqrt(Math.pow((xcoord - x.get(j)), 2)
-                            + Math.pow((ycoord - y.get(j)), 2));
-                    if (distance < radius + pathlength) {
-                        checkOverlap = true;
-                        break;
-                    }
-                }
 
-            } while (checkOverlap);
-            x.add(xcoord);
-            y.add(ycoord);
+        //Assigning coordinates for points into array using ellipse equation
+        for (int i = 0, tempX = 200, tempY = 500; i < pointsCoord.length; i++) {
+            pointsCoord[i][0] = tempX;
+            pointsCoord[i][1] = tempY;
+            if (i < 10) {
+                tempX += 160;
+                double a = 1 - (Math.pow(tempX - 1000, 2) / Math.pow(800, 2));
+                double b = Math.pow(400, 2);
+                tempY = (int) (Math.sqrt(a * b)) + 500;
+
+            } else {
+                tempX -= 160;
+                double a = 1 - (Math.pow(tempX - 1000, 2) / Math.pow(800, 2));
+                double b = Math.pow(400, 2);
+                tempY = (int) (Math.sqrt(a * b)) + 500;
+                tempY = 1000 - tempY;
+            }
+
+        }
+
+        System.out.println("point size: " + points.size());
+        System.out.println(Arrays.deepToString(pointsCoord));
+
+//        for (int i = 0; i < points.size(); i++) {
+//            System.out.println("i: " + i);
+//            boolean checkOverlap;
+//            int xcoord = 0;
+//            int ycoord = 0;
+//            do {
+//                checkOverlap = false;
+//
+//                if (i < points.size() / 2) {
+//                    xcoord = r.nextInt(601) + 200;
+//                    ycoord = r.nextInt(301) + 100;
+//                } else {
+//                    xcoord = r.nextInt(601) + 1200;
+//                    ycoord = r.nextInt(301) + 600;
+//                }
+////                xcoord = r.nextInt(xMaxSize) + 200;
+////                ycoord = r.nextInt(yMaxSize) + 100;
+//                for (int j = 0; j < x.size(); j++) {
+//                    double distance = Math.sqrt(Math.pow((xcoord - x.get(j)), 2)
+//                            + Math.pow((ycoord - y.get(j)), 2));
+//                    if (distance < radius + pathlength) {
+//                        checkOverlap = true;
+//                        break;
+//                    }
+//                }
+//
+//            } while (checkOverlap);
+//            x.add(xcoord);
+//            y.add(ycoord);
+//        }
+        for (int i = 0; i < points.size(); i++) {
+            //Assigning coordinates to each points with randomly selected coordinates from array.
+            int n = r.nextInt(20);           
+            while (usedCoord.contains(n)) {
+                n = r.nextInt(20);
+            }
+            usedCoord.add(n);
+            x.add(pointsCoord[n][0]);
+            y.add(pointsCoord[n][1]);
         }
 
         Collections.shuffle(color);
