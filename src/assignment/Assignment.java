@@ -813,5 +813,13 @@ public class Assignment extends Application {
             }
         });
     }
-
+    
+    
+    public static void move(Kangaroo k){
+        if(k.getGender().equals("M")){
+            
+        }else{
+            
+        }
+    }
 }
