@@ -1,5 +1,6 @@
 package assignment;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,6 +33,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -210,7 +212,7 @@ public class Assignment extends Application {
                     private int current = 0;
                     //index of current point
                     private int entry = 0;
-                    private boolean twoWay = false;
+//                    private boolean twoWay = false;
 
                     //ensure a 2-way connection
                     @Override
@@ -306,17 +308,18 @@ public class Assignment extends Application {
                                                     && !genderInput.getText().equalsIgnoreCase("F")) {
                                                 error = true;
                                             }
-                                            System.out.println("error 1 " + error);
                                             for (int i = 0; i < points.size(); i++) {
                                                 if (points.get(i).getId().equals(startPointInput.getText())) {
                                                     start = points.get(i);
                                                     points.get(i).setSize(points.get(i).getSize() - 1);
+                                                    //reduce the size as added 1 kangaroo to the point
                                                     break;
                                                 } else if (i == points.size() - 1 && !points.get(i).getId().equals(startPointInput.getText())) {
                                                     error = true;
                                                 }
                                             }
                                             if (start.getSize() < 0) {
+                                                //Check whether the number of kangaroo on each point exceed the maximum or not
                                                 Alert exceed = new Alert(Alert.AlertType.WARNING);
                                                 exceed.setTitle("Error");
                                                 exceed.setHeaderText("Exceeded Maximum number of kangaroo");
@@ -338,6 +341,7 @@ public class Assignment extends Application {
                                             startPointInput.clear();
                                             noOfFoodInput.clear();
                                             genderInput.clear();
+                                            System.out.println("MAXKANGAROO = " + MAXKANGAROO);
                                             if (count == MAXKANGAROO) {
                                                 startPointInput.setEditable(false);
                                                 noOfFoodInput.setEditable(false);
@@ -386,20 +390,18 @@ public class Assignment extends Application {
                                         Point destinationPoint = null;
                                         PointPath path1 = null;
                                         //Path1 for connect A to B
-                                        PointPath path2 = null;
-                                        //Path2 for connect B to A
-                                        for (int i = 0; i < pathtablelist.size(); i++) {
-                                            if (pathtable_pathid.equals(pathtablelist.get(i).getPathid())) {
-                                                Alert redundant = new Alert(Alert.AlertType.WARNING);
-                                                redundant.setTitle("Error");
-                                                redundant.setHeaderText("Redundant Path ID");
-                                                redundant.showAndWait();
-                                                obstacleheightinput.clear();
-                                                ptconnected.clear();
-                                                ptid.clear();
-                                                return;
-                                            }
-                                        }
+//                                        for (int i = 0; i < pathtablelist.size(); i++) {
+//                                            if (pathtable_pathid.equals(pathtablelist.get(i).getPathid())) {
+//                                                Alert redundant = new Alert(Alert.AlertType.WARNING);
+//                                                redundant.setTitle("Error");
+//                                                redundant.setHeaderText("Redundant Path ID");
+//                                                redundant.showAndWait();
+//                                                obstacleheightinput.clear();
+//                                                ptconnected.clear();
+//                                                ptid.clear();
+//                                                return;
+//                                            }
+//                                        }
                                         for (int i = 0, a = points.size(); i < a; i++) {
                                             destinationPoint = points.get(i);
                                             if (points.get(i).getPathid().contains(pathtable_pathid)) {
@@ -417,9 +419,9 @@ public class Assignment extends Application {
                                                 //set the link
                                                 path1 = new PointPath(sourceidinput.getText(), destinationPoint, pathtable_pathid,
                                                         Integer.parseInt(obstacleheight));
-                                                points.get(i).setBidirection(true);
-                                                destinationPoint.setBidirection(true);
-                                                twoWay = true;
+//                                                points.get(i).setBidirection(true);
+//                                                destinationPoint.setBidirection(true);
+//                                                twoWay = true;
                                                 break;
                                             }
                                             if (i == points.size() - 1 && !points.get(i).getId().equals(destination)) {
@@ -460,67 +462,65 @@ public class Assignment extends Application {
                                             points.get(current).setLink(destinationPoint, pathtable_pathid);
                                         }
 
-                                        if (twoWay) {
-                                            //if Point A connected to B, then Point B must be connected to Point A
-                                            //so a pop up window is used to get input of Path ID and Obstacle Height from user
-                                            boolean redundant = false;
-                                            String twoWayPathIDInput = "";
-                                            int twoWayObstacleHeightInput = 0;
-                                            destinationPoint.setPath(destinationPoint.getPath() - 1);
-                                            TextInputDialog twoWayPathID = new TextInputDialog();
-                                            TextInputDialog twoWayObstacleHeight = new TextInputDialog();
-                                            do {
-                                                twoWayPathID.setTitle("Path ID");
-                                                twoWayPathID.setHeaderText("Insert the Path ID from Point " + destinationPoint.getId()
-                                                        + " to Point " + points.get(current).getId());
-                                                twoWayPathID.showAndWait();
-
-                                                twoWayObstacleHeight.setTitle("Path ID");
-                                                twoWayObstacleHeight.setHeaderText("Insert the Obstacle Height from Point " + destinationPoint.getId()
-                                                        + " to Point " + points.get(current).getId());
-                                                twoWayObstacleHeight.showAndWait();
-                                                twoWayPathIDInput = twoWayPathID.getEditor().getText();
-                                                twoWayObstacleHeightInput = Integer.parseInt(twoWayObstacleHeight.getEditor().getText());
-                                                for (int i = 0; i < pathtablelist.size(); i++) {
-                                                    //check redundant id in pathtablelist
-                                                    if (twoWayPathIDInput.equals(pathtablelist.get(i).getPathid())) {
-                                                        redundant = true;
-                                                        break;
-                                                    } else if (!twoWayPathIDInput.equals(pathtablelist.get(i).getPathid())
-                                                            && i == pathtablelist.size() - 1) {
-                                                        redundant = false;
-                                                        twoWayPathID.close();
-                                                        twoWayObstacleHeight.close();
-                                                    }
-                                                }
-                                                if (twoWayPathIDInput.equals(path1.getPathid())) {
-                                                    //Check whether the point B to A's ID is equals to point A to B's ID
-                                                    //if the user key in wrong data in the first time, the for loop will not check
-                                                    //because the pathtablelist is empty as no data is added to it yet
-                                                    redundant = true;
-                                                }
-                                                twoWayPathID.getEditor().clear();
-                                                twoWayObstacleHeight.getEditor().clear();
-                                                if (redundant) {
-                                                    Alert redundantID = new Alert(Alert.AlertType.WARNING);
-                                                    redundantID.setTitle("Error");
-                                                    redundantID.setHeaderText("Redundant Path ID");
-                                                    redundantID.showAndWait();
-                                                }
-                                            } while (redundant);
-
-                                            path2 = new PointPath(destinationPoint.getId(), points.get(current), twoWayPathIDInput,
-                                                    twoWayObstacleHeightInput);
-                                            destinationPoint.setLink(points.get(current), twoWayPathID.getEditor().getText());
-                                            twoWay = false;
-                                            //reset back twoWay to false
-                                        }
-
+//                                        if (twoWay) {
+//                                            //if Point A connected to B, then Point B must be connected to Point A
+//                                            //so a pop up window is used to get input of Path ID and Obstacle Height from user
+//                                            boolean redundant = false;
+//                                            String twoWayPathIDInput = "";
+//                                            int twoWayObstacleHeightInput = 0;
+//                                            destinationPoint.setPath(destinationPoint.getPath() - 1);
+//                                            TextInputDialog twoWayPathID = new TextInputDialog();
+//                                            TextInputDialog twoWayObstacleHeight = new TextInputDialog();
+//                                            do {
+//                                                twoWayPathID.setTitle("Path ID");
+//                                                twoWayPathID.setHeaderText("Insert the Path ID from Point " + destinationPoint.getId()
+//                                                        + " to Point " + points.get(current).getId());
+//                                                twoWayPathID.showAndWait();
+//
+//                                                twoWayObstacleHeight.setTitle("Path ID");
+//                                                twoWayObstacleHeight.setHeaderText("Insert the Obstacle Height from Point " + destinationPoint.getId()
+//                                                        + " to Point " + points.get(current).getId());
+//                                                twoWayObstacleHeight.showAndWait();
+//                                                twoWayPathIDInput = twoWayPathID.getEditor().getText();
+//                                                twoWayObstacleHeightInput = Integer.parseInt(twoWayObstacleHeight.getEditor().getText());
+//                                                for (int i = 0; i < pathtablelist.size(); i++) {
+//                                                    //check redundant id in pathtablelist
+//                                                    if (twoWayPathIDInput.equals(pathtablelist.get(i).getPathid())) {
+//                                                        redundant = true;
+//                                                        break;
+//                                                    } else if (!twoWayPathIDInput.equals(pathtablelist.get(i).getPathid())
+//                                                            && i == pathtablelist.size() - 1) {
+//                                                        redundant = false;
+//                                                        twoWayPathID.close();
+//                                                        twoWayObstacleHeight.close();
+//                                                    }
+//                                                }
+//                                                if (twoWayPathIDInput.equals(path1.getPathid())) {
+//                                                    //Check whether the point B to A's ID is equals to point A to B's ID
+//                                                    //if the user key in wrong data in the first time, the for loop will not check
+//                                                    //because the pathtablelist is empty as no data is added to it yet
+//                                                    redundant = true;
+//                                                }
+//                                                twoWayPathID.getEditor().clear();
+//                                                twoWayObstacleHeight.getEditor().clear();
+//                                                if (redundant) {
+//                                                    Alert redundantID = new Alert(Alert.AlertType.WARNING);
+//                                                    redundantID.setTitle("Error");
+//                                                    redundantID.setHeaderText("Redundant Path ID");
+//                                                    redundantID.showAndWait();
+//                                                }
+//                                            } while (redundant);
+//
+//                                            path2 = new PointPath(destinationPoint.getId(), points.get(current), twoWayPathIDInput,
+//                                                    twoWayObstacleHeightInput);
+//                                            destinationPoint.setLink(points.get(current), twoWayPathID.getEditor().getText());
+//                                            twoWay = false;
+//                                            //reset back twoWay to false
+//                                        }
                                         ptconnected.clear();
                                         ptid.clear();
                                         obstacleheightinput.clear();
                                         pathtablelist.add(path1);
-                                        pathtablelist.add(path2);
                                         pathlist.add(destinationPoint);
                                         entry++;
                                         if (entry == points.get(current).getPath()) {
@@ -529,9 +529,6 @@ public class Assignment extends Application {
                                             if (current < points.size()) {
                                                 //move to next point after filling the current point's path
                                                 sourceidinput.clear();
-                                                if (twoWay) {
-
-                                                }
                                                 while (points.get(current).getPath() == 0) {
                                                     current++;
                                                     if (current == points.size()) {
@@ -670,6 +667,7 @@ public class Assignment extends Application {
         color.add(Color.MEDIUMSLATEBLUE);
         ArrayList<Line> line = new ArrayList<>();
         ArrayList<Pane> figure = new ArrayList<>();
+        ArrayList<Text> pathID = new ArrayList<>();
         int xMaxSize = 1601;
         int yMaxSize = 801;
         int radius = 50;
@@ -739,33 +737,31 @@ public class Assignment extends Application {
             figure.add(sp);
             circle.add(c);
         }
-
-        for (int i = 0; i < points.size(); i++) {
-
+        for (int i = 0; i < pathtablelist.size(); i++) {
             int startX, startY, endX, endY;
-            if (points.get(i).getPath() != 0) {
-                startX = x.get(i);
-                startY = y.get(i);
-            } else {
-                continue;
-            }
-            for (int j = 0; j < points.get(i).getLink().size(); j++) {
-                Line l = new Line();
-                boolean sameLine = false;
-                endX = points.get(i).getLink().get(j).getX();
-                endY = points.get(i).getLink().get(j).getY();
-                for (int k = 0; k < lineUsed.size(); k++) {
-                    System.out.println("Array: " + Arrays.toString(lineUsed.get(k)));
-                    System.out.println("Points: " + startX + " " + startY + " " + endX + " " + endY);
-                    if (lineUsed.get(k)[0] == endX && lineUsed.get(k)[1] == endY
-                            && lineUsed.get(k)[2] == startX && lineUsed.get(k)[3] == startY) {
-                        sameLine = true;
-                        break;
-                    }
+            Line l = new Line();
+            boolean sameLine = false;
+            Point source = null;
+            for (int j = 0; j < points.size(); j++) {
+                if (pathtablelist.get(i).getSource().equals(points.get(j).getId())) {
+                    source = points.get(j);
+                    break;
                 }
-                //Check whether line already exists between 2 points
-                System.out.println("test : " + sameLine);
-                if (sameLine) {
+            }
+            startX = source.getX();
+            startY = source.getY();
+            endX = pathtablelist.get(i).getP().getX();
+            endY = pathtablelist.get(i).getP().getY();
+            for (int k = 0; k < lineUsed.size(); k++) {
+                System.out.println("Array: " + Arrays.toString(lineUsed.get(k)));
+                System.out.println("Points: " + startX + " " + startY + " " + endX + " " + endY);
+                if (lineUsed.get(k)[0] == endX && lineUsed.get(k)[1] == endY
+                        && lineUsed.get(k)[2] == startX && lineUsed.get(k)[3] == startY) {
+                    sameLine = true;
+                    break;
+                }
+            }
+            if (sameLine) {
                     startX -= 5;
                     startY -= 5;
                     endX -= 15;
@@ -789,14 +785,81 @@ public class Assignment extends Application {
                 l.setEndY(endY);
                 l.setVisible(true);
                 line.add(l);
-            }
 
+                double midPointX = (l.getStartX() + l.getEndX()) / 2 - 5;
+                double midPointY = (l.getStartY() + l.getEndY()) / 2 + 5;
+                Text id = new Text(pathtablelist.get(i).getPathid());
+                id.setX(midPointX);
+                id.setY(midPointY);
+                id.setFont(Font.font("Verdana", 20));
+                id.setFill(Color.RED);
+                pathID.add(id);
         }
+//        for (int i = 0; i < points.size(); i++) {
+//
+//            int startX, startY, endX, endY;
+//            if (points.get(i).getPath() != 0) {
+//                startX = x.get(i);
+//                startY = y.get(i);
+//            } else {
+//                continue;
+//            }
+//            for (int j = 0; j < points.get(i).getLink().size(); j++) {
+//                Line l = new Line();
+//                boolean sameLine = false;
+//                endX = points.get(i).getLink().get(j).getX();
+//                endY = points.get(i).getLink().get(j).getY();
+//                for (int k = 0; k < lineUsed.size(); k++) {
+//                    System.out.println("Array: " + Arrays.toString(lineUsed.get(k)));
+//                    System.out.println("Points: " + startX + " " + startY + " " + endX + " " + endY);
+//                    if (lineUsed.get(k)[0] == endX && lineUsed.get(k)[1] == endY
+//                            && lineUsed.get(k)[2] == startX && lineUsed.get(k)[3] == startY) {
+//                        sameLine = true;
+//                        break;
+//                    }
+//                }
+//                
+//
+//                //Check whether line already exists between 2 points
+//                System.out.println("test : " + sameLine);
+//
+//                if (sameLine) {
+//                    startX -= 5;
+//                    startY -= 5;
+//                    endX -= 15;
+//                    endY -= 15;
+//                } else {
+//                    Integer[] temp = new Integer[4];
+//                    temp[0] = startX;
+//                    temp[1] = startY;
+//                    temp[2] = endX;
+//                    temp[3] = endY;
+//                    lineUsed.add(temp);
+//                    startX += 5;
+//                    startY += 5;
+//                    endX += 15;
+//                    endY += 15;
+//                }
+//
+//                l.setStartX(startX);
+//                l.setStartY(startY);
+//                l.setEndX(endX);
+//                l.setEndY(endY);
+//                l.setVisible(true);
+//                line.add(l);
+//
+//                double midPointX = (l.getStartX() + l.getEndX()) / 2 - 5;
+//                double midPointY = (l.getStartY() + l.getEndY()) / 2 + 5;
+//                Text id = new Text();
+//            }
+//            System.out.println("pathtablelist size" + pathtablelist.size());
+
+//        }
 
         Pane pane = new Pane();
         pane.getChildren().addAll(line);
-//        pane.getChildren().addAll(circle);
         pane.getChildren().addAll(figure);
+        pane.getChildren().addAll(pathID);
         Stage stage = new Stage();
         stage.setMaximized(true);
         stage.setTitle("Kangaroo");
@@ -813,13 +876,12 @@ public class Assignment extends Application {
             }
         });
     }
-    
-    
-    public static void move(Kangaroo k){
-        if(k.getGender().equals("M")){
-            
-        }else{
-            
+
+    public static void move(Kangaroo k) {
+        if (k.getGender().equals("M")) {
+
+        } else {
+
         }
     }
 }
