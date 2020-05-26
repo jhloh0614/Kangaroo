@@ -907,6 +907,10 @@ public class Assignment extends Application {
                                 equalMostFood = true;
                                 tempCounter.add(i);
                             }
+                            else if(foodLeft < 0){
+                                moved = true;
+                                foodLeft = -foodLeft;
+                            }
                         }
                     }
                 }
@@ -933,6 +937,7 @@ public class Assignment extends Application {
                 k.setStartPoint(p);
                 
                 p.setMaleKangaroo(p.getMaleKangaroo() + 1);
+                p.setSize(p.getSize() - 1);
                 int foodAvailable = (int) mostFoodLeft;               
                 if (foodAvailable < k.getMaxPouchFood()) {
                     int foodAdded = k.getMaxPouchFood() - k.getNoOfFood();
