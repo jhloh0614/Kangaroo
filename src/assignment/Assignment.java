@@ -881,6 +881,7 @@ public class Assignment extends Application {
             double mostFoodLeft = -999;
             boolean moved = false;
             boolean equalMostFood = false;
+            double foodNeeded = 0;
             ArrayList<Integer> tempCounter = new ArrayList<>();
             int tempI = -1;
 
@@ -890,16 +891,16 @@ public class Assignment extends Application {
                     if (pathtablelist.get(i).getP().getCurrentKangarooNumber()
                             < pathtablelist.get(i).getP().getSize()) {
                         if (pathtablelist.get(i).getP().getFood() > 0) {
-                            double foodNeeded = pathtablelist.get(i).getObstacleheight() + (0.5 * k.getNoOfFood());
+                            foodNeeded = pathtablelist.get(i).getObstacleheight() + (0.5 * k.getNoOfFood());
                             double foodLeft = pathtablelist.get(i).getP().getFood() - foodNeeded;
                             if (foodLeft > 0 && foodLeft > mostFoodLeft) {
                                 mostFoodLeft = foodLeft;
                                 equalMostFood = false;
                                 moved = true;
                                 tempI = i;
+                                //tempI is the point with highest food
                                 tempCounter = new ArrayList();
                                 //refresh the list if found another higher food point
-                                //why dont just add i??
                                 tempCounter.add(tempI);
                             } else if (foodLeft == mostFoodLeft) {
                                 moved = true;
@@ -930,18 +931,19 @@ public class Assignment extends Application {
                 //Moving the kangaroo to new point and update all the variables
                 Point p = pathtablelist.get(tempI).getP();
                 k.setStartPoint(p);
-                //why set the startpoint to p?
-                //startpoint should be set already in the kangaroo table
                 
                 p.setMaleKangaroo(p.getMaleKangaroo() + 1);
                 int foodAvailable = (int) mostFoodLeft;               
                 if (foodAvailable < k.getMaxPouchFood()) {
-                    k.setNoOfFood(foodAvailable);
-                    //no need to plus back the kangaroo's remaining food meh
-                    p.setFood(0);
-                    //why set the no of food to 0
+                    int foodAdded = k.getMaxPouchFood() - k.getNoOfFood();
+                    //to calculate the food needed to get back to max no of food
+                    foodAvailable = foodAvailable - foodAdded;
+                    k.setNoOfFood(foodAdded + k.getNoOfFood());
+                    //add kangaroo's current food with the food available in the point
+                    p.setFood(foodAvailable);
+                    //the kangaroo take all the food in the point already
                 } else {
-                    k.setNoOfFood(k.getMaxPouchFood());
+                    k.setNoOfFood(foodAvailable + k.getNoOfFood());
                     p.setFood(foodAvailable - k.getNoOfFood());
                 }
                 
