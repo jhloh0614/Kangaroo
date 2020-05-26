@@ -2,7 +2,7 @@
 package assignment;
 
 public class Kangaroo {
-    
+       
     private Point startPoint;
     private int noOfFood;
     private String gender;
