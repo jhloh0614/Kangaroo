@@ -10,11 +10,51 @@ public class Point {
     private LinkedList<String> pathid = new LinkedList<>();
     private boolean bidirection = false;
     private int count = 0;
-
-    
+    private int femaleKangaroo = 0;
+    private int maleKangaroo = 0;
     private int x = 0;
     private int y = 0;
     private double layoutX, layoutY;
+
+    public Point(Point point, String pathid) {
+        this.pathid.add(pathid);
+        link.add(point);
+
+    }
+
+    public Point(String source, String destination, String pathid) {
+        this.id = source;
+        link.add(new Point(destination));
+        this.pathid.add(pathid);
+
+    }
+
+    public Point(String id) {
+        this.id = id;
+    }
+
+    public Point(String id, int food, int size, int path) {
+        this.id = id;
+        this.food = food;
+        this.size = size;
+        this.path = path;
+    }
+
+    public int getFemaleKangaroo() {
+        return femaleKangaroo;
+    }
+
+    public void setFemaleKangaroo(int femaleKangaroo) {
+        this.femaleKangaroo = femaleKangaroo;
+    }
+
+    public int getMaleKangaroo() {
+        return maleKangaroo;
+    }
+
+    public void setMaleKangaroo(int maleKangaroo) {
+        this.maleKangaroo = maleKangaroo;
+    }
 
     public double getLayoutX() {
         return layoutX;
@@ -31,8 +71,7 @@ public class Point {
     public void setLayoutY(double layoutY) {
         this.layoutY = layoutY;
     }
-    
-    
+
     public int getCount() {
         return count;
     }
@@ -56,7 +95,7 @@ public class Point {
     public void setY(int y) {
         this.y = y;
     }
-    
+
     public boolean isBidirection() {
         return bidirection;
     }
@@ -64,7 +103,7 @@ public class Point {
     public void setBidirection(boolean bidirection) {
         this.bidirection = bidirection;
     }
-    
+
     public LinkedList<Point> getLink() {
         return link;
     }
@@ -89,15 +128,15 @@ public class Point {
             System.out.println("The path is full");
         }
     }
-    
-    public void setLink(String destination){
-        if(!linkFull()){
+
+    public void setLink(String destination) {
+        if (!linkFull()) {
             link.add(new Point(destination));
         }
     }
-    
-    public void setLink(Point p){
-        if(!linkFull()){
+
+    public void setLink(Point p) {
+        if (!linkFull()) {
             link.add(p);
         }
     }
@@ -112,28 +151,6 @@ public class Point {
             System.out.println("The path is full");
         }
 
-    }
-
-    public Point(Point point, String pathid) {
-        this.pathid.add(pathid);
-        link.add(point);
-    }
-
-    public Point(String source, String destination, String pathid) {
-        this.id = source;
-        link.add(new Point(destination));
-        this.pathid.add(pathid);
-    }
-
-    public Point(String id) {
-        this.id = id;
-    }
-
-    public Point(String id, int food, int size, int path) {
-        this.id = id;
-        this.food = food;
-        this.size = size;
-        this.path = path;
     }
 
 //    public void setLink(Point point, String pathid){
