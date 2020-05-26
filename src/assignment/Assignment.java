@@ -39,7 +39,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class Assignment extends Application {
-
+    
     private static Point2D point[][];
     private int noOfPoints;
     private TableView table = new TableView();
@@ -877,11 +877,58 @@ public class Assignment extends Application {
         });
     }
 
-    public static void move(Kangaroo k) {
+     public static void move(Kangaroo k) {
         if (k.getGender().equals("M")) {
+            //Male
+            double mostFood = -999;
+            boolean moved = false;
+            boolean equalMostFood = false;
+            ArrayList<Integer> tempCounter = new ArrayList<>();
+            int tempI = -1;
+
+            //Check for which point will result in most food after travelling
+            for (int i = 0; i < pathtablelist.size(); i++) {
+                if (pathtablelist.get(i).getSource().equals(k.getStartPoint().getId())) {
+                    if (pathtablelist.get(i).getP().getFood() > 0) {
+                        double foodNeeded = pathtablelist.get(i).getObstacleheight() + (0.5 * k.getNoOfFood());
+                        double foodLeft = pathtablelist.get(i).getP().getFood() - foodNeeded;
+                        if (foodLeft > 0 && foodLeft > mostFood) {
+                            mostFood = foodLeft;
+                            equalMostFood = false;
+                            moved = true;
+                            tempI = i;
+                            tempCounter = new ArrayList();
+                            tempCounter.add(tempI);
+                        } else if (foodLeft == mostFood) {
+                            equalMostFood = true;
+                            tempCounter.add(i);
+                        }
+                    }
+                }
+            }
+
+            if (!equalMostFood) {
+                //If does not have points with equal amount of food and moveable
+                if (moved) {
+                    k.setStartPoint(pathtablelist.get(tempI).getP());
+                    //return true
+                    
+                }else{
+                    //return false
+                    
+                }
+            } else {
+                //Check for which points will result in most females
+                int mostFemale = -999;
+                for (int i = 0; i < tempCounter.size(); i++) {
+                    PointPath p = pathtablelist.get(tempCounter.get(i));
+                    
+                    
+                }
+            }
 
         } else {
-
+            //Female
         }
     }
 }
