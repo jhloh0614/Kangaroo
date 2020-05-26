@@ -312,13 +312,14 @@ public class Assignment extends Application {
                                                     start = points.get(i);
                                                     points.get(i).setSize(points.get(i).getSize() - 1);
                                                     //reduce the size as added 1 kangaroo to the point
+                                                    //Jh: Max Size shouldnt be reduced, should be constant d
                                                     break;
                                                 } else if (i == points.size() - 1 && !points.get(i).getId().equals(startPointInput.getText())) {
                                                     error = true;
                                                 }
                                             }
                                             if (start.getSize() < 0) {
-                                                //Check whether the number of kangaroo on each point exceed the maximum or not
+                                                //Check whether the number of kangaroo on each point exceed the maximum or not                                                
                                                 Alert exceed = new Alert(Alert.AlertType.WARNING);
                                                 exceed.setTitle("Error");
                                                 exceed.setHeaderText("Exceeded Maximum number of kangaroo");
@@ -854,6 +855,13 @@ public class Assignment extends Application {
 //            System.out.println("pathtablelist size" + pathtablelist.size());
 
 //        }
+//        Button startSimulation = new Button("Start Simulation");
+//        startSimulation.setOnAction(new EventHandler<ActionEvent>() {
+//                                        @Override
+//                                        public void handle(ActionEvent e) {
+//                                            start();
+//                                        }
+//                                    });
         Pane pane = new Pane();
         pane.getChildren().addAll(line);
         pane.getChildren().addAll(figure);
@@ -873,11 +881,12 @@ public class Assignment extends Application {
                 System.exit(0);
             }
         });
+        
     }
 
     public static void move(Kangaroo k) {
         //Male
-        if (k.getGender().equals("M")) {
+        if (k.getGender().equalsIgnoreCase("M") || k.getGender().equalsIgnoreCase("Male")) {
             double mostFoodLeft = -999;
             boolean moved = false;
             boolean equalMostFood = false;
@@ -934,11 +943,11 @@ public class Assignment extends Application {
 
                 //Moving the kangaroo to new point and update all the variables
                 Point p = pathtablelist.get(tempI).getP();
-                
+
                 //Remove the kangaroo from original point, not sure will work or not                
                 k.getCurrentPoint().setMaleKangaroo(k.getCurrentPoint().getMaleKangaroo() - 1);
                 k.setCurrentPoint(p);
-                
+
                 p.setMaleKangaroo(p.getMaleKangaroo() + 1);
                 p.setSize(p.getSize() - 1);
 
