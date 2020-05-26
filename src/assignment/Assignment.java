@@ -898,6 +898,8 @@ public class Assignment extends Application {
                                 moved = true;
                                 tempI = i;
                                 tempCounter = new ArrayList();
+                                //refresh the list if found another higher food point
+                                //why dont just add i??
                                 tempCounter.add(tempI);
                             } else if (foodLeft == mostFoodLeft) {
                                 moved = true;
@@ -920,6 +922,7 @@ public class Assignment extends Application {
                         if (p.getP().getFemaleKangaroo() > mostFemale) {
                             mostFemale = p.getP().getFemaleKangaroo();
                             tempI = tempCounter.get(i);
+                            //tempI is the index of the point with highest number of female
                         }
                     }
                 }
@@ -927,11 +930,16 @@ public class Assignment extends Application {
                 //Moving the kangaroo to new point and update all the variables
                 Point p = pathtablelist.get(tempI).getP();
                 k.setStartPoint(p);
+                //why set the startpoint to p?
+                //startpoint should be set already in the kangaroo table
+                
                 p.setMaleKangaroo(p.getMaleKangaroo() + 1);
                 int foodAvailable = (int) mostFoodLeft;               
                 if (foodAvailable < k.getMaxPouchFood()) {
                     k.setNoOfFood(foodAvailable);
+                    //no need to plus back the kangaroo's remaining food meh
                     p.setFood(0);
+                    //why set the no of food to 0
                 } else {
                     k.setNoOfFood(k.getMaxPouchFood());
                     p.setFood(foodAvailable - k.getNoOfFood());
