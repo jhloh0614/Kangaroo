@@ -39,15 +39,15 @@ import javafx.stage.WindowEvent;
 public class Assignment extends Application {
 
     private static Point2D point[][];
-    private int ptno;
+    private int noOfPoints;
     private TableView table = new TableView();
     static ObservableList<Point> points = FXCollections.observableArrayList();
     private boolean donesetpoint;
     private TableView pathtable = new TableView();
     static ObservableList<Point> pathlist = FXCollections.observableArrayList();
     static ObservableList<PointPath> pathtablelist = FXCollections.observableArrayList();
-    private int rowno;
-    private int ptnoconstant;
+    private int noOfRow;
+    private int POINTNUMBER;
 
     @Override
     public void start(Stage primaryStage) {
@@ -63,7 +63,7 @@ public class Assignment extends Application {
                 td1.showAndWait();
                 Stage stage = new Stage();
                 try {
-                    ptno = Integer.parseInt(td1.getEditor().getText());
+                    noOfPoints = Integer.parseInt(td1.getEditor().getText());
                 } catch (NumberFormatException e) {
                     Alert exception = new Alert(Alert.AlertType.WARNING);
                     exception.setTitle("Error Message");
@@ -142,7 +142,7 @@ public class Assignment extends Application {
                 pathinput.setMinWidth(150);
                 Button add = new Button("Add");
                 HBox hb = new HBox();
-                ptnoconstant = ptno;
+                POINTNUMBER = noOfPoints;
 
                 add.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
@@ -158,7 +158,7 @@ public class Assignment extends Application {
                             return;
                         }
 
-                        if (ptno < 1) {
+                        if (noOfPoints < 1) {
                             Alert alert = new Alert(Alert.AlertType.WARNING);
                             alert.setTitle("Attention!");
                             alert.setHeaderText("Exceeded number of points");
@@ -178,10 +178,10 @@ public class Assignment extends Application {
                                 return;
                             }
                         }
-                        if (Integer.parseInt(pathinput.getText()) >= ptnoconstant) {
+                        if (Integer.parseInt(pathinput.getText()) >= POINTNUMBER) {
                             Alert exceeded = new Alert(Alert.AlertType.WARNING);
                             exceeded.setTitle("Error");
-                            exceeded.setHeaderText("Number of path should be less than total number of points which is " + ptnoconstant);
+                            exceeded.setHeaderText("Number of path should be less than total number of points which is " + POINTNUMBER);
                             exceeded.showAndWait();
                             pathinput.clear();
                             return;
@@ -194,8 +194,8 @@ public class Assignment extends Application {
                         foodinput.clear();
                         sizeinput.clear();
                         pathinput.clear();
-                        ptno--;
-                        rowno = id.getTableView().getItems().size();
+                        noOfPoints--;
+                        noOfRow = id.getTableView().getItems().size();
                     }
                 });
                 Button ok = new Button("OK");
@@ -204,13 +204,16 @@ public class Assignment extends Application {
                 hb.setSpacing(5);
                 ok.setOnAction(new EventHandler<ActionEvent>() {
 
-                    private int index = 0;
+                    private int current = 0;
+                    //index of current point
                     private int entry = 0;
+                    private boolean twoWay = false;
 
+                    //ensure a 2-way connection
                     @Override
                     public void handle(ActionEvent e) {
                         stage.close();
-                        if (rowno == ptnoconstant) {
+                        if (noOfRow == POINTNUMBER) {
                             Stage pathstage = new Stage();
                             HBox pathhb = new HBox();
                             TableColumn sourceid = new TableColumn("Source ID");
@@ -242,11 +245,12 @@ public class Assignment extends Application {
                             obstacleheightinput.setPromptText("Obstacle Height");
 
                             Button addpath = new Button("Add path");
-                            while (points.get(index).getPath() == 0) {
-                                index++;
+                            while (points.get(current).getPath() == 0) {
+                                //move to next point if the point has 0 path
+                                current++;
                             }
 
-                            sourceidinput.setText(points.get(index).getId());
+                            sourceidinput.setText(points.get(current).getId());
 
                             sourceidinput.setEditable(false);
 
@@ -259,6 +263,7 @@ public class Assignment extends Application {
                             });
 
                             addpath.setOnAction(new EventHandler<ActionEvent>() {
+
                                 @Override
                                 public void handle(ActionEvent e) {
                                     if (obstacleheightinput.getText().equals("")
@@ -271,13 +276,18 @@ public class Assignment extends Application {
                                         return;
                                     }
 
-                                    if (entry < points.get(index).getPath()) {
+                                    if (entry < points.get(current).getPath()) {
+                                        //Check whether the entries for the link exceed number of paths
+
                                         String obstacleheight = obstacleheightinput.getText();
                                         String destination = ptconnected.getText();
                                         String pathtable_pathid = ptid.getText();
 
-                                        Point p = null;
-                                        PointPath path = null;
+                                        Point destinationPoint = null;
+                                        PointPath path1 = null;
+                                        //Path1 for connect A to B
+                                        PointPath path2 = null;
+                                        //Path2 for connect B to A
                                         for (int i = 0; i < pathtablelist.size(); i++) {
                                             if (pathtable_pathid.equals(pathtablelist.get(i).getPathid())) {
                                                 Alert redundant = new Alert(Alert.AlertType.WARNING);
@@ -291,7 +301,9 @@ public class Assignment extends Application {
                                             }
                                         }
                                         for (int i = 0, a = points.size(); i < a; i++) {
+                                            destinationPoint = points.get(i);
                                             if (points.get(i).getPathid().contains(pathtable_pathid)) {
+                                                //Check same path ID, if same ID, error
                                                 Alert redundant = new Alert(Alert.AlertType.WARNING);
                                                 redundant.setTitle("Error");
                                                 redundant.setHeaderText("Redundant Path ID");
@@ -302,12 +314,17 @@ public class Assignment extends Application {
                                                 return;
                                             }
                                             if (points.get(i).getId().equals(destination)) {
-                                                p = points.get(i);
-                                                path = new PointPath(sourceidinput.getText(), points.get(i), pathtable_pathid,
+                                                //set the link
+                                                path1 = new PointPath(sourceidinput.getText(), destinationPoint, pathtable_pathid,
                                                         Integer.parseInt(obstacleheight));
+                                                points.get(i).setBidirection(true);
+                                                destinationPoint.setBidirection(true);
+                                                twoWay = true;
                                                 break;
                                             }
                                             if (i == points.size() - 1 && !points.get(i).getId().equals(destination)) {
+                                                //Check until the last index of list and if the list does not contains the destination point
+                                                //display error
                                                 Alert xexist = new Alert(Alert.AlertType.WARNING);
                                                 xexist.setTitle("Error");
                                                 xexist.setHeaderText("Point does not exists");
@@ -321,11 +338,11 @@ public class Assignment extends Application {
                                         }
 
                                         boolean repeat = false;
-                                        if (points.get(index).getId().equals(path.getP().getId())) {
+                                        if (points.get(current).getId().equals(path1.getP().getId())) {
                                             repeat = true;
                                         }
-                                        for (int i = 0; i < points.get(index).getLink().size(); i++) {
-                                            if (points.get(index).getLink().get(i).equals(path.getP())) {
+                                        for (int i = 0; i < points.get(current).getLink().size(); i++) {
+                                            if (points.get(current).getLink().get(i).equals(path1.getP())) {
                                                 repeat = true;
                                                 break;
                                             }
@@ -340,28 +357,60 @@ public class Assignment extends Application {
                                             obstacleheightinput.clear();
                                             return;
                                         } else {
-                                            points.get(index).setLink(p, pathtable_pathid);
+                                            points.get(current).setLink(destinationPoint, pathtable_pathid);
                                         }
+
+                                        if (twoWay) {
+                                            destinationPoint.setPath(destinationPoint.getPath() - 1);
+                                            TextInputDialog twoWayPathID = new TextInputDialog();
+                                            twoWayPathID.setTitle("Path ID");
+                                            twoWayPathID.setHeaderText("Insert the Path ID from " + destinationPoint.getId()
+                                             + " to " + points.get(current).getId());
+                                            twoWayPathID.showAndWait();
+                                            TextInputDialog twoWayObstacleHeight = new TextInputDialog();
+                                            twoWayObstacleHeight.setTitle("Path ID");
+                                            twoWayObstacleHeight.setHeaderText("Insert the Obstacle Height from " + destinationPoint.getId()
+                                             + " to " + points.get(current).getId());
+                                            twoWayObstacleHeight.showAndWait();
+                                            path2 = new PointPath(destinationPoint.getId(), points.get(current), twoWayPathID.getEditor().getText(),
+                                                    Integer.parseInt(twoWayObstacleHeight.getEditor().getText()));
+                                            destinationPoint.setLink(points.get(current), twoWayPathID.getEditor().getText());
+//                                            sourceidinput.setText(destinationPoint.getId());
+//                                            ptconnected.setText(points.get(current).getId());
+//                                            ptconnected.setEditable(false);
+//                                            ptid.clear();
+//                                            obstacleheightinput.clear();
+                                            twoWay = false;
+                                            //reset back twoWay to false
+                                        }
+                                        
                                         ptconnected.clear();
                                         ptid.clear();
                                         obstacleheightinput.clear();
-                                        pathtablelist.add(path);
-                                        pathlist.add(p);
+                                        pathtablelist.add(path1);
+                                        pathtablelist.add(path2);
+//                                        pathlist.add(destinationPoint);
                                         entry++;
-                                        if (entry == points.get(index).getPath()) {
-                                            index++;
+                                        if (entry == points.get(current).getPath()) {
+                                            current++;
                                             entry = 0;
-                                            if (index < points.size()) {
+                                            if (current < points.size()) {
+                                                //move to next point after filling the current point's path
                                                 sourceidinput.clear();
-                                                while (points.get(index).getPath() == 0) {
-                                                    index++;
-                                                    if (index == points.size()) {
+                                                if(twoWay){
+                                                    
+                                                }
+                                                while (points.get(current).getPath() == 0) {
+                                                    current++;
+                                                    if (current == points.size()) {
+                                                        //if last path is 0 then end
                                                         return;
                                                     }
                                                 }
-                                                sourceidinput.setText(points.get(index).getId());
-
+                                                sourceidinput.setText(points.get(current).getId());
+                                                
                                             } else {
+                                                //all paths have been filled
                                                 ptconnected.setEditable(false);
                                                 ptid.setEditable(false);
                                                 obstacleheightinput.setEditable(false);
@@ -370,10 +419,10 @@ public class Assignment extends Application {
                                         }
 
                                     } else {
-                                        if (entry == points.get(index).getPath()) {
-                                            index++;
+                                        if (entry == points.get(current).getPath()) {
+                                            current++;
                                             sourceidinput.clear();
-                                            sourceidinput.setText(points.get(index).getId());
+                                            sourceidinput.setText(points.get(current).getId());
                                             entry = 0;
                                         } else {
                                             Alert al = new Alert(Alert.AlertType.WARNING);
@@ -550,7 +599,7 @@ public class Assignment extends Application {
 //        }
         for (int i = 0; i < points.size(); i++) {
             //Assigning coordinates to each points with randomly selected coordinates from array.
-            int n = r.nextInt(20);           
+            int n = r.nextInt(20);
             while (usedCoord.contains(n)) {
                 n = r.nextInt(20);
             }
