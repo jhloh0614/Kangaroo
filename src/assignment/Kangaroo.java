@@ -1,18 +1,30 @@
-
 package assignment;
 
 public class Kangaroo {
-       
+
     private Point startPoint;
+    //Added currentPoint/endPoint for kangaroo
+    private Point currentPoint;
     private int noOfFood;
     private String gender;
     private int maxPouchFood;
     private boolean canTravelTo;
-    
-    public Kangaroo(Point startPoint, int noOfFood, String gender){
+
+    //The arguments need to change from int noOfFood --> int maxPouchFood
+    //You change ba because I scare I change here will affect the input there
+    public Kangaroo(Point startPoint, int noOfFood, String gender) {
         this.startPoint = startPoint;
         this.noOfFood = noOfFood;
         this.gender = gender;
+        this.currentPoint = startPoint;
+    }
+
+    public Point getCurrentPoint() {
+        return currentPoint;
+    }
+
+    public void setCurrentPoint(Point currentPoint) {
+        this.currentPoint = currentPoint;
     }
 
     public int getMaxPouchFood() {
@@ -22,8 +34,6 @@ public class Kangaroo {
     public void setMaxPouchFood(int maxPouchFood) {
         this.maxPouchFood = maxPouchFood;
     }
-    
-    
 
     public Point getStartPoint() {
         return startPoint;
@@ -49,8 +59,8 @@ public class Kangaroo {
         this.gender = gender;
     }
 
-    public void canTravelTo(Point p){
-        
+    public void canTravelTo(Point p) {
+
     }
-    
+
 }
