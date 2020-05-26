@@ -923,11 +923,12 @@ public class Assignment extends Application {
                         }
                     }
                 }
+                
+                //Moving the kangaroo to new point and update all the variables
                 Point p = pathtablelist.get(tempI).getP();
                 k.setStartPoint(p);
                 p.setMaleKangaroo(p.getMaleKangaroo() + 1);
-                int foodAvailable = (int) mostFoodLeft;
-                
+                int foodAvailable = (int) mostFoodLeft;               
                 if (foodAvailable < k.getMaxPouchFood()) {
                     k.setNoOfFood(foodAvailable);
                     p.setFood(0);
