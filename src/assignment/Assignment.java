@@ -281,8 +281,55 @@ public class Assignment extends Application {
                                     startPointInput.setPromptText("Initial Point of Kangaroo");
                                     genderInput.setPromptText("Gender of Kangaroo");
                                     noOfFoodInput.setPromptText("Number of Food in Pouch");
-
+                                    Button ok = new Button("OK");
+                                    ok.setOnAction(new EventHandler<ActionEvent>(){
+                                        @Override
+                                        public void handle(ActionEvent e){
+                                            start();
+                                        }
+                                    });
                                     Button addInput = new Button("Add");
+                                    addInput.setOnAction(new EventHandler<ActionEvent>(){
+                                        
+                                        private int count = 0;
+                                        @Override
+                                        public void handle(ActionEvent e){
+                                            Point start = null;
+                                            boolean error = false;
+                                            if(!genderInput.getText().equalsIgnoreCase("Male")||
+                                                    !genderInput.getText().equalsIgnoreCase("Female") ||
+                                                    !genderInput.getText().equalsIgnoreCase("M")||
+                                                    !genderInput.getText().equalsIgnoreCase("F")){
+                                                error = true;
+                                            }
+                                            for (int i = 0; i < points.size(); i++) {
+                                                if(points.get(i).getId().equals(startPointInput.getText())){
+                                                    start = points.get(i);
+                                                }
+                                                else if(i == points.size() - 1 && !points.get(i).getId().equals(startPointInput.getText())){
+                                                    error = true;
+                                                }
+                                            }
+                                            if(!error){
+                                                count ++;
+                                                kangarooList.add(new Kangaroo(start, Integer.parseInt(noOfFoodInput.getText()),genderInput.getText()));
+                                            }
+                                            else{
+                                                Alert invalid = new Alert(Alert.AlertType.WARNING);
+                                                invalid.setTitle("Invalid Input");
+                                                invalid.setHeaderText("Invalid Input");
+                                                invalid.showAndWait();
+                                            }
+                                            startPointInput.clear();
+                                            noOfFoodInput.clear();
+                                            genderInput.clear();
+                                            if(count == MAXKANGAROO){
+                                                startPointInput.setEditable(false);
+                                                noOfFoodInput.setEditable(false);
+                                                genderInput.setEditable(false);
+                                            }
+                                        }
+                                    });
                                     
                                     
 
@@ -291,8 +338,9 @@ public class Assignment extends Application {
                                     final VBox kangarooVb = new VBox();
                                     kangarooTable.setItems(kangarooList);
                                     kangarooTable.getColumns().addAll(startPoint, gender, noOfFood);
-                                    kangarooHBox.getChildren().addAll(startPointInput, genderInput, noOfFoodInput);
+                                    kangarooHBox.getChildren().addAll(startPointInput, genderInput, noOfFoodInput, addInput);
                                     kangarooVb.setPadding(new Insets(0, 0, 0, 0));
+                                    kangarooVb.setSpacing(5);
                                     kangarooVb.getChildren().addAll(kangarooTable, kangarooHBox);
                                     Scene kangarooScene = new Scene(new Group());
                                     ((Group) kangarooScene.getRoot()).getChildren().addAll(kangarooVb);
