@@ -8,7 +8,10 @@ public class Point {
     private String id;
     private LinkedList<Point> link = new LinkedList<>();
     private LinkedList<String> pathid = new LinkedList<>();
+    private boolean bidirection = false;
     private int count = 0;
+
+    
     private int x = 0;
     private int y = 0;
     private double layoutX, layoutY;
@@ -54,7 +57,13 @@ public class Point {
         this.y = y;
     }
     
-    
+    public boolean isBidirection() {
+        return bidirection;
+    }
+
+    public void setBidirection(boolean bidirection) {
+        this.bidirection = bidirection;
+    }
     
     public LinkedList<Point> getLink() {
         return link;
@@ -78,6 +87,18 @@ public class Point {
             this.pathid.add(pathid);
         } else {
             System.out.println("The path is full");
+        }
+    }
+    
+    public void setLink(String destination){
+        if(!linkFull()){
+            link.add(new Point(destination));
+        }
+    }
+    
+    public void setLink(Point p){
+        if(!linkFull()){
+            link.add(p);
         }
     }
 
