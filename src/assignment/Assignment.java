@@ -1,6 +1,5 @@
 package assignment;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,7 +38,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class Assignment extends Application {
-    
+
     private static Point2D point[][];
     private int noOfPoints;
     private TableView table = new TableView();
@@ -762,38 +761,38 @@ public class Assignment extends Application {
                 }
             }
             if (sameLine) {
-                    startX -= 5;
-                    startY -= 5;
-                    endX -= 15;
-                    endY -= 15;
-                } else {
-                    Integer[] temp = new Integer[4];
-                    temp[0] = startX;
-                    temp[1] = startY;
-                    temp[2] = endX;
-                    temp[3] = endY;
-                    lineUsed.add(temp);
-                    startX += 5;
-                    startY += 5;
-                    endX += 15;
-                    endY += 15;
-                }
+                startX -= 5;
+                startY -= 5;
+                endX -= 15;
+                endY -= 15;
+            } else {
+                Integer[] temp = new Integer[4];
+                temp[0] = startX;
+                temp[1] = startY;
+                temp[2] = endX;
+                temp[3] = endY;
+                lineUsed.add(temp);
+                startX += 5;
+                startY += 5;
+                endX += 15;
+                endY += 15;
+            }
 
-                l.setStartX(startX);
-                l.setStartY(startY);
-                l.setEndX(endX);
-                l.setEndY(endY);
-                l.setVisible(true);
-                line.add(l);
+            l.setStartX(startX);
+            l.setStartY(startY);
+            l.setEndX(endX);
+            l.setEndY(endY);
+            l.setVisible(true);
+            line.add(l);
 
-                double midPointX = (l.getStartX() + l.getEndX()) / 2 - 5;
-                double midPointY = (l.getStartY() + l.getEndY()) / 2 + 5;
-                Text id = new Text(pathtablelist.get(i).getPathid());
-                id.setX(midPointX);
-                id.setY(midPointY);
-                id.setFont(Font.font("Verdana", 20));
-                id.setFill(Color.RED);
-                pathID.add(id);
+            double midPointX = (l.getStartX() + l.getEndX()) / 2 - 5;
+            double midPointY = (l.getStartY() + l.getEndY()) / 2 + 5;
+            Text id = new Text(pathtablelist.get(i).getPathid());
+            id.setX(midPointX);
+            id.setY(midPointY);
+            id.setFont(Font.font("Verdana", 20));
+            id.setFill(Color.RED);
+            pathID.add(id);
         }
 //        for (int i = 0; i < points.size(); i++) {
 //
@@ -855,7 +854,6 @@ public class Assignment extends Application {
 //            System.out.println("pathtablelist size" + pathtablelist.size());
 
 //        }
-
         Pane pane = new Pane();
         pane.getChildren().addAll(line);
         pane.getChildren().addAll(figure);
@@ -877,10 +875,10 @@ public class Assignment extends Application {
         });
     }
 
-     public static void move(Kangaroo k) {
+    public static void move(Kangaroo k) {
         if (k.getGender().equals("M")) {
             //Male
-            double mostFood = -999;
+            double mostFoodLeft = -999;
             boolean moved = false;
             boolean equalMostFood = false;
             ArrayList<Integer> tempCounter = new ArrayList<>();
@@ -889,46 +887,62 @@ public class Assignment extends Application {
             //Check for which point will result in most food after travelling
             for (int i = 0; i < pathtablelist.size(); i++) {
                 if (pathtablelist.get(i).getSource().equals(k.getStartPoint().getId())) {
-                    if (pathtablelist.get(i).getP().getFood() > 0) {
-                        double foodNeeded = pathtablelist.get(i).getObstacleheight() + (0.5 * k.getNoOfFood());
-                        double foodLeft = pathtablelist.get(i).getP().getFood() - foodNeeded;
-                        if (foodLeft > 0 && foodLeft > mostFood) {
-                            mostFood = foodLeft;
-                            equalMostFood = false;
-                            moved = true;
-                            tempI = i;
-                            tempCounter = new ArrayList();
-                            tempCounter.add(tempI);
-                        } else if (foodLeft == mostFood) {
-                            equalMostFood = true;
-                            tempCounter.add(i);
+                    if (pathtablelist.get(i).getP().getCurrentKangarooNumber()
+                            < pathtablelist.get(i).getP().getSize()) {
+                        if (pathtablelist.get(i).getP().getFood() > 0) {
+                            double foodNeeded = pathtablelist.get(i).getObstacleheight() + (0.5 * k.getNoOfFood());
+                            double foodLeft = pathtablelist.get(i).getP().getFood() - foodNeeded;
+                            if (foodLeft > 0 && foodLeft > mostFoodLeft) {
+                                mostFoodLeft = foodLeft;
+                                equalMostFood = false;
+                                moved = true;
+                                tempI = i;
+                                tempCounter = new ArrayList();
+                                tempCounter.add(tempI);
+                            } else if (foodLeft == mostFoodLeft) {
+                                moved = true;
+                                equalMostFood = true;
+                                tempCounter.add(i);
+                            }
                         }
                     }
                 }
             }
 
-            if (!equalMostFood) {
-                //If does not have points with equal amount of food and moveable
-                if (moved) {
-                    k.setStartPoint(pathtablelist.get(tempI).getP());
-                    //return true
-                    
-                }else{
-                    //return false
-                    
+            if (moved) {
+                //If have points with equal amount of food
+                if (equalMostFood) {
+                    //Check for which points will result in most females
+                    int mostFemale = -999;
+                    tempI = tempCounter.get(0);
+                    for (int i = 0; i < tempCounter.size(); i++) {
+                        PointPath p = pathtablelist.get(tempCounter.get(i));
+                        if (p.getP().getFemaleKangaroo() > mostFemale) {
+                            mostFemale = p.getP().getFemaleKangaroo();
+                            tempI = tempCounter.get(i);
+                        }
+                    }
                 }
+                Point p = pathtablelist.get(tempI).getP();
+                k.setStartPoint(p);
+                p.setMaleKangaroo(p.getMaleKangaroo() + 1);
+                int foodAvailable = (int) mostFoodLeft;
+                
+                if (foodAvailable < k.getMaxPouchFood()) {
+                    k.setNoOfFood(foodAvailable);
+                    p.setFood(0);
+                } else {
+                    k.setNoOfFood(k.getMaxPouchFood());
+                    p.setFood(foodAvailable - k.getNoOfFood());
+                }
+                
+                //return true
+                
             } else {
-                //Check for which points will result in most females
-                int mostFemale = -999;
-                for (int i = 0; i < tempCounter.size(); i++) {
-                    PointPath p = pathtablelist.get(tempCounter.get(i));
-                    
-                    
-                }
-            }
 
-        } else {
-            //Female
+                //return false
+                //To be determined what to do
+            }
         }
     }
 }
