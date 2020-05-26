@@ -48,7 +48,7 @@ public class Point {
     public int getCurrentKangarooNumber() {
         return femaleKangaroo + maleKangaroo;
     }
-            
+                    
     public void setFemaleKangaroo(int femaleKangaroo) {
         this.femaleKangaroo = femaleKangaroo;
     }
