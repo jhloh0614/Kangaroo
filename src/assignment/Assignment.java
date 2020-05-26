@@ -47,7 +47,7 @@ public class Assignment extends Application {
     private TableView kangarooTable = new TableView();
     static ObservableList<Point> pathlist = FXCollections.observableArrayList();
     static ObservableList<PointPath> pathtablelist = FXCollections.observableArrayList();
-//    static ObservableList<Kangaroo> kangarooList = FXCollections.observableArrayList();
+    static ObservableList<Kangaroo> kangarooList = FXCollections.observableArrayList();
     private int MAXKANGAROO;
     private int noOfRow;
     private int POINTNUMBER;
@@ -802,11 +802,11 @@ public class Assignment extends Application {
     }
     
     
-//    public static void move(Kangaroo k){
-//        if(k.getGender()=='M'){
-//            
-//        }else{
-//            
-//        }
-//    }
+    public static void move(Kangaroo k){
+        if(k.getGender().equals("M")){
+            
+        }else{
+            
+        }
+    }
 }
