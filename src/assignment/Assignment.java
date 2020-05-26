@@ -274,6 +274,9 @@ public class Assignment extends Application {
                                     startPoint.setCellValueFactory(new PropertyValueFactory<Kangaroo, Point>("startPoint"));
                                     gender.setCellValueFactory(new PropertyValueFactory<Kangaroo, String>("gender"));
                                     noOfFood.setCellValueFactory(new PropertyValueFactory<Kangaroo, Integer>("noOfFood"));
+                                    startPoint.setMinWidth(200);
+                                    gender.setMinWidth(100);
+                                    noOfFood.setMinWidth(200);
 
                                     TextField startPointInput = new TextField();
                                     TextField genderInput = new TextField();
@@ -282,39 +285,51 @@ public class Assignment extends Application {
                                     genderInput.setPromptText("Gender of Kangaroo");
                                     noOfFoodInput.setPromptText("Number of Food in Pouch");
                                     Button ok = new Button("OK");
-                                    ok.setOnAction(new EventHandler<ActionEvent>(){
+                                    ok.setOnAction(new EventHandler<ActionEvent>() {
                                         @Override
-                                        public void handle(ActionEvent e){
+                                        public void handle(ActionEvent e) {
                                             start();
                                         }
                                     });
                                     Button addInput = new Button("Add");
-                                    addInput.setOnAction(new EventHandler<ActionEvent>(){
-                                        
+                                    addInput.setOnAction(new EventHandler<ActionEvent>() {
+
                                         private int count = 0;
+
                                         @Override
-                                        public void handle(ActionEvent e){
+                                        public void handle(ActionEvent e) {
                                             Point start = null;
                                             boolean error = false;
-                                            if(!genderInput.getText().equalsIgnoreCase("Male")||
-                                                    !genderInput.getText().equalsIgnoreCase("Female") ||
-                                                    !genderInput.getText().equalsIgnoreCase("M")||
-                                                    !genderInput.getText().equalsIgnoreCase("F")){
+                                            if (!genderInput.getText().equalsIgnoreCase("Male")
+                                                    && !genderInput.getText().equalsIgnoreCase("Female")
+                                                    && !genderInput.getText().equalsIgnoreCase("M")
+                                                    && !genderInput.getText().equalsIgnoreCase("F")) {
                                                 error = true;
                                             }
+                                            System.out.println("error 1 " + error);
                                             for (int i = 0; i < points.size(); i++) {
-                                                if(points.get(i).getId().equals(startPointInput.getText())){
+                                                if (points.get(i).getId().equals(startPointInput.getText())) {
                                                     start = points.get(i);
-                                                }
-                                                else if(i == points.size() - 1 && !points.get(i).getId().equals(startPointInput.getText())){
+                                                    points.get(i).setSize(points.get(i).getSize() - 1);
+                                                    break;
+                                                } else if (i == points.size() - 1 && !points.get(i).getId().equals(startPointInput.getText())) {
                                                     error = true;
                                                 }
                                             }
-                                            if(!error){
-                                                count ++;
-                                                kangarooList.add(new Kangaroo(start, Integer.parseInt(noOfFoodInput.getText()),genderInput.getText()));
+                                            if (start.getSize() < 0) {
+                                                Alert exceed = new Alert(Alert.AlertType.WARNING);
+                                                exceed.setTitle("Error");
+                                                exceed.setHeaderText("Exceeded Maximum number of kangaroo");
+                                                exceed.showAndWait();
+                                                startPointInput.clear();
+                                                noOfFoodInput.clear();
+                                                genderInput.clear();
+                                                return;
                                             }
-                                            else{
+                                            if (!error) {
+                                                count++;
+                                                kangarooList.add(new Kangaroo(start, Integer.parseInt(noOfFoodInput.getText()), genderInput.getText()));
+                                            } else {
                                                 Alert invalid = new Alert(Alert.AlertType.WARNING);
                                                 invalid.setTitle("Invalid Input");
                                                 invalid.setHeaderText("Invalid Input");
@@ -323,22 +338,20 @@ public class Assignment extends Application {
                                             startPointInput.clear();
                                             noOfFoodInput.clear();
                                             genderInput.clear();
-                                            if(count == MAXKANGAROO){
+                                            if (count == MAXKANGAROO) {
                                                 startPointInput.setEditable(false);
                                                 noOfFoodInput.setEditable(false);
                                                 genderInput.setEditable(false);
                                             }
                                         }
                                     });
-                                    
-                                    
 
                                     Stage kangarooInputStage = new Stage();
                                     HBox kangarooHBox = new HBox();
                                     final VBox kangarooVb = new VBox();
                                     kangarooTable.setItems(kangarooList);
                                     kangarooTable.getColumns().addAll(startPoint, gender, noOfFood);
-                                    kangarooHBox.getChildren().addAll(startPointInput, genderInput, noOfFoodInput, addInput);
+                                    kangarooHBox.getChildren().addAll(startPointInput, genderInput, noOfFoodInput, addInput, ok);
                                     kangarooVb.setPadding(new Insets(0, 0, 0, 0));
                                     kangarooVb.setSpacing(5);
                                     kangarooVb.getChildren().addAll(kangarooTable, kangarooHBox);
@@ -452,7 +465,7 @@ public class Assignment extends Application {
                                             //so a pop up window is used to get input of Path ID and Obstacle Height from user
                                             boolean redundant = false;
                                             String twoWayPathIDInput = "";
-                                            int twoWayObstacleHeightInput = 0; 
+                                            int twoWayObstacleHeightInput = 0;
                                             destinationPoint.setPath(destinationPoint.getPath() - 1);
                                             TextInputDialog twoWayPathID = new TextInputDialog();
                                             TextInputDialog twoWayObstacleHeight = new TextInputDialog();
@@ -461,7 +474,7 @@ public class Assignment extends Application {
                                                 twoWayPathID.setHeaderText("Insert the Path ID from Point " + destinationPoint.getId()
                                                         + " to Point " + points.get(current).getId());
                                                 twoWayPathID.showAndWait();
-                                                
+
                                                 twoWayObstacleHeight.setTitle("Path ID");
                                                 twoWayObstacleHeight.setHeaderText("Insert the Obstacle Height from Point " + destinationPoint.getId()
                                                         + " to Point " + points.get(current).getId());
@@ -488,14 +501,14 @@ public class Assignment extends Application {
                                                 }
                                                 twoWayPathID.getEditor().clear();
                                                 twoWayObstacleHeight.getEditor().clear();
-                                                if(redundant){
+                                                if (redundant) {
                                                     Alert redundantID = new Alert(Alert.AlertType.WARNING);
                                                     redundantID.setTitle("Error");
                                                     redundantID.setHeaderText("Redundant Path ID");
                                                     redundantID.showAndWait();
                                                 }
                                             } while (redundant);
-                                            
+
                                             path2 = new PointPath(destinationPoint.getId(), points.get(current), twoWayPathIDInput,
                                                     twoWayObstacleHeightInput);
                                             destinationPoint.setLink(points.get(current), twoWayPathID.getEditor().getText());
