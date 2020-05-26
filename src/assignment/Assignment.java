@@ -934,10 +934,11 @@ public class Assignment extends Application {
 
                 //Moving the kangaroo to new point and update all the variables
                 Point p = pathtablelist.get(tempI).getP();
-                k.setStartPoint(p);
-
-                //Need to remove the kangaroo from original point
-                //To be added later
+                
+                //Remove the kangaroo from original point, not sure will work or not                
+                k.getCurrentPoint().setMaleKangaroo(k.getCurrentPoint().getMaleKangaroo() - 1);
+                k.setCurrentPoint(p);
+                
                 p.setMaleKangaroo(p.getMaleKangaroo() + 1);
                 p.setSize(p.getSize() - 1);
 
