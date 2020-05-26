@@ -876,8 +876,8 @@ public class Assignment extends Application {
     }
 
     public static void move(Kangaroo k) {
+        //Male
         if (k.getGender().equals("M")) {
-            //Male
             double mostFoodLeft = -999;
             boolean moved = false;
             boolean equalMostFood = false;
@@ -938,22 +938,21 @@ public class Assignment extends Application {
 
                 //Need to remove the kangaroo from original point
                 //To be added later
-                
                 p.setMaleKangaroo(p.getMaleKangaroo() + 1);
                 p.setSize(p.getSize() - 1);
-                
+
                 int foodAvailable = (int) mostFoodLeft;
                 if (foodAvailable < 0) {
                     //If foodAvailable < 0, means kangaroo need to use food from its pouch
-                    k.setNoOfFood(k.getNoOfFood()+foodAvailable);
+                    k.setNoOfFood(k.getNoOfFood() + foodAvailable);
                     p.setFood(0);
-                    
+
                 } else if (foodAvailable < k.getMaxPouchFood()) {
                     //to calculate the food needed to get back to max no of food
-                    int foodAdded = k.getMaxPouchFood() - k.getNoOfFood();                   
-                    foodAvailable = foodAvailable - foodAdded;                    
+                    int foodAdded = k.getMaxPouchFood() - k.getNoOfFood();
+                    foodAvailable = foodAvailable - foodAdded;
                     //add kangaroo's current food with the food available in the point
-                    k.setNoOfFood(foodAdded + k.getNoOfFood());                    
+                    k.setNoOfFood(foodAdded + k.getNoOfFood());
                     //the food left in the point after kangaroo take
                     p.setFood(foodAvailable);
                 } else {
@@ -966,7 +965,6 @@ public class Assignment extends Application {
 
                 //return false
                 //To be determined what to do
-                
             }
         }
     }
