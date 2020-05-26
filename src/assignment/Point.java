@@ -12,6 +12,7 @@ public class Point {
     private int count = 0;
     private int femaleKangaroo = 0;
     private int maleKangaroo = 0;
+    private int currentKangarooNumber = 0;
     private int x = 0;
     private int y = 0;
     private double layoutX, layoutY;
@@ -44,6 +45,10 @@ public class Point {
         return femaleKangaroo;
     }
 
+    public int getCurrentKangarooNumber() {
+        return femaleKangaroo + maleKangaroo;
+    }
+            
     public void setFemaleKangaroo(int femaleKangaroo) {
         this.femaleKangaroo = femaleKangaroo;
     }
