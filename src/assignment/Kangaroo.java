@@ -1,3 +1,4 @@
+
 package assignment;
 
 public class Kangaroo {
@@ -40,8 +41,5 @@ public class Kangaroo {
     public void canTravelTo(Point p){
         
     }
-    
-    
-    
     
 }
