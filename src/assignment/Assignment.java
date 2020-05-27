@@ -910,9 +910,8 @@ public class Assignment extends Application {
 
                 //Check for which point will result in most food after travelling
                 for (int i = 0; i < pathTableList.size(); i++) {
-                    if (pathTableList.get(i).getSource().equals(k.getStartPoint().getId())) {
-                        //Check starting point of kangaroo same with source
-                        //actually no need check start point d i think i got ald
+                    if (pathTableList.get(i).getSource().equals(k.getCurrentPoint().getId())) {
+                        //Check current point where the kangaroo at
                         if (pathTableList.get(i).getP().getCurrentKangarooNumber()
                                 < pathTableList.get(i).getP().getSize()) {
                             //Check current kangaroo number at destination, whether full or not
@@ -951,8 +950,13 @@ public class Assignment extends Application {
                                  */
 
                                 int female = pathTableList.get(i).getP().getFemaleKangaroo();
-                                if(female == 0){
-                                    return false;
+                                while(female == 0 && i < pathTableList.size()){
+                                    //If no more food available on the point
+                                    //The point may not have female kangaroo too
+                                    //So the if no female kangaroo
+                                    //The kangaroo wont even move to this point
+                                    i++;
+                                    female = pathTableList.get(i).getP().getFemaleKangaroo();
                                 }
                                 boolean isPointColonised = pathTableList.get(i).getP().isIsColonised();
                                 boolean isAbleToJump;
