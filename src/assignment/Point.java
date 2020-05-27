@@ -9,6 +9,7 @@ public class Point {
     private LinkedList<Point> link = new LinkedList<>();
     private LinkedList<String> pathid = new LinkedList<>();
     private boolean bidirection = false;
+    private boolean isColonised = false;
     private int count = 0;
     private int femaleKangaroo = 0;
     private int maleKangaroo = 0;
@@ -41,6 +42,14 @@ public class Point {
         this.path = path;
     }
 
+    public boolean isIsColonised() {
+        return isColonised;
+    }
+
+    public void setIsColonised(boolean isColonised) {
+        this.isColonised = isColonised;
+    }
+        
     public int getFemaleKangaroo() {
         return femaleKangaroo;
     }
