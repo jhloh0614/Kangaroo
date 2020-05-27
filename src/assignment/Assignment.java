@@ -938,8 +938,7 @@ public class Assignment extends Application {
                                         //Check kangaroo's current food and the destination food
                                         //If greater than the food needed, then can jump
                                         //Assume the kangaroo can take the destination food even he havent jump
-                                        double foodLeftOnPoint = pathTableList.get(i).getP().getFood() - foodNeededToJump;
-                                        //**Check whether the point have a colony or not     
+                                        double foodLeftOnPoint = pathTableList.get(i).getP().getFood() - foodNeededToJump;                                   
                                         //Check for most foodLeft
                                         if (foodLeftOnPoint > mostFoodLeft) {
                                             mostFoodLeft = foodLeftOnPoint;
@@ -975,6 +974,8 @@ public class Assignment extends Application {
                                             .getP().getCurrentKangarooNumber();
                                     //if the point is colonised, the newcomer kangaroo need to distribute 1 of his food
                                     //to all of the kangaroo at the point
+                                    //Jh: if colonised, the distribution doesn't matter d right, because it only need to know whether he has enough for
+                                    //all but they share the food d, so no need implement the distribution.
                                 } else {
                                     isAbleToJump = k.getNoOfFood() >= foodNeededToJump;
                                     //if not colonised, if the kangaroo has more or equal food
