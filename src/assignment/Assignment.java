@@ -300,10 +300,10 @@ public class Assignment extends Application {
                                     TableColumn startPoint, gender, noOfFood;
                                     startPoint = new TableColumn("Initial Point");
                                     gender = new TableColumn("Gender");
-                                    noOfFood = new TableColumn("Number of Food in Pouch");
+                                    noOfFood = new TableColumn("Maximum Food in Pouch");
                                     startPoint.setCellValueFactory(new PropertyValueFactory<Kangaroo, Point>("startPoint"));
                                     gender.setCellValueFactory(new PropertyValueFactory<Kangaroo, String>("gender"));
-                                    noOfFood.setCellValueFactory(new PropertyValueFactory<Kangaroo, Integer>("noOfFood"));
+                                    noOfFood.setCellValueFactory(new PropertyValueFactory<Kangaroo, Integer>("maxPouchFood"));
                                     startPoint.setMinWidth(200);
                                     gender.setMinWidth(100);
                                     noOfFood.setMinWidth(200);
@@ -371,6 +371,13 @@ public class Assignment extends Application {
                                                 } else if (i == points.size() - 1 && !points.get(i).getId().equals(startPointInput.getText())) {
                                                     error = true;
                                                 }
+                                            }
+                                            if(start == null){
+                                                Alert invalid = new Alert(Alert.AlertType.WARNING);
+                                                invalid.setTitle("Invalid Input");
+                                                invalid.setHeaderText("Invalid Input");
+                                                invalid.showAndWait();
+                                                return;
                                             }
                                             if (start.getCurrentKangarooNumber() > start.getSize()) {
                                                 //Check whether the number of kangaroo on each point exceed the maximum or not                                                
@@ -444,18 +451,6 @@ public class Assignment extends Application {
                                         Point destinationPoint = null;
                                         PointPath path1 = null;
                                         //Path1 for connect A to B
-//                                        for (int i = 0; i < pathtablelist.size(); i++) {
-//                                            if (pathtable_pathid.equals(pathtablelist.get(i).getPathid())) {
-//                                                Alert redundant = new Alert(Alert.AlertType.WARNING);
-//                                                redundant.setTitle("Error");
-//                                                redundant.setHeaderText("Redundant Path ID");
-//                                                redundant.showAndWait();
-//                                                obstacleheightinput.clear();
-//                                                ptconnected.clear();
-//                                                ptid.clear();
-//                                                return;
-//                                            }
-//                                        }
                                         for (int i = 0, a = points.size(); i < a; i++) {
                                             destinationPoint = points.get(i);
                                             if (points.get(i).getPathid().contains(pathtable_pathid)) {
@@ -473,9 +468,6 @@ public class Assignment extends Application {
                                                 //set the link
                                                 path1 = new PointPath(sourceidinput.getText(), destinationPoint, pathtable_pathid,
                                                         Integer.parseInt(obstacleheight));
-//                                                points.get(i).setBidirection(true);
-//                                                destinationPoint.setBidirection(true);
-//                                                twoWay = true;
                                                 break;
                                             }
                                             if (i == points.size() - 1 && !points.get(i).getId().equals(destination)) {
@@ -515,62 +507,6 @@ public class Assignment extends Application {
                                         } else {
                                             points.get(current).setLink(destinationPoint, pathtable_pathid);
                                         }
-
-//                                        if (twoWay) {
-//                                            //if Point A connected to B, then Point B must be connected to Point A
-//                                            //so a pop up window is used to get input of Path ID and Obstacle Height from user
-//                                            boolean redundant = false;
-//                                            String twoWayPathIDInput = "";
-//                                            int twoWayObstacleHeightInput = 0;
-//                                            destinationPoint.setPath(destinationPoint.getPath() - 1);
-//                                            TextInputDialog twoWayPathID = new TextInputDialog();
-//                                            TextInputDialog twoWayObstacleHeight = new TextInputDialog();
-//                                            do {
-//                                                twoWayPathID.setTitle("Path ID");
-//                                                twoWayPathID.setHeaderText("Insert the Path ID from Point " + destinationPoint.getId()
-//                                                        + " to Point " + points.get(current).getId());
-//                                                twoWayPathID.showAndWait();
-//
-//                                                twoWayObstacleHeight.setTitle("Path ID");
-//                                                twoWayObstacleHeight.setHeaderText("Insert the Obstacle Height from Point " + destinationPoint.getId()
-//                                                        + " to Point " + points.get(current).getId());
-//                                                twoWayObstacleHeight.showAndWait();
-//                                                twoWayPathIDInput = twoWayPathID.getEditor().getText();
-//                                                twoWayObstacleHeightInput = Integer.parseInt(twoWayObstacleHeight.getEditor().getText());
-//                                                for (int i = 0; i < pathtablelist.size(); i++) {
-//                                                    //check redundant id in pathtablelist
-//                                                    if (twoWayPathIDInput.equals(pathtablelist.get(i).getPathid())) {
-//                                                        redundant = true;
-//                                                        break;
-//                                                    } else if (!twoWayPathIDInput.equals(pathtablelist.get(i).getPathid())
-//                                                            && i == pathtablelist.size() - 1) {
-//                                                        redundant = false;
-//                                                        twoWayPathID.close();
-//                                                        twoWayObstacleHeight.close();
-//                                                    }
-//                                                }
-//                                                if (twoWayPathIDInput.equals(path1.getPathid())) {
-//                                                    //Check whether the point B to A's ID is equals to point A to B's ID
-//                                                    //if the user key in wrong data in the first time, the for loop will not check
-//                                                    //because the pathtablelist is empty as no data is added to it yet
-//                                                    redundant = true;
-//                                                }
-//                                                twoWayPathID.getEditor().clear();
-//                                                twoWayObstacleHeight.getEditor().clear();
-//                                                if (redundant) {
-//                                                    Alert redundantID = new Alert(Alert.AlertType.WARNING);
-//                                                    redundantID.setTitle("Error");
-//                                                    redundantID.setHeaderText("Redundant Path ID");
-//                                                    redundantID.showAndWait();
-//                                                }
-//                                            } while (redundant);
-//
-//                                            path2 = new PointPath(destinationPoint.getId(), points.get(current), twoWayPathIDInput,
-//                                                    twoWayObstacleHeightInput);
-//                                            destinationPoint.setLink(points.get(current), twoWayPathID.getEditor().getText());
-//                                            twoWay = false;
-//                                            //reset back twoWay to false
-//                                        }
                                         ptconnected.clear();
                                         ptid.clear();
                                         obstacleheightinput.clear();
@@ -912,10 +848,12 @@ public class Assignment extends Application {
             boolean isMoveable = false;
             for (int i = 0; i < kangarooList.size(); i++) {
                 Kangaroo k = kangarooList.get(i);
+                System.out.println("Kangaroo " + i + " gender is " + k.getGender());
                 boolean kangarooMoves = move(k);
                 if (kangarooMoves) {
                     isMoveable = true;
                 }
+                System.out.println("Kangaroo " + i + " isMoveable = " + isMoveable );
             }
             //If no moves then output result
             if (!isMoveable) {
@@ -947,18 +885,21 @@ public class Assignment extends Application {
         for (int i = 0; i < points.size(); i++) {
             if (points.get(i).getFood() > 0) {
                 isFoodAvailableOnMap = true;
+                break;
             }
+        }
+        if(k.getGender().equalsIgnoreCase("F") || k.getGender().equalsIgnoreCase("Female")){
+            return false;
         }
 
         //Male
         if (k.getGender().equalsIgnoreCase("M") || k.getGender().equalsIgnoreCase("Male")) {
-
             //Check whether the kangaroo already in a colony            
             if (!k.isColonised()) {
                 //why go set the colony threshold
                 //i simply put d, because idk where u put ma, now know d lo
-                double mostFoodLeft = k.getStartPoint().getFood();
-                int mostFemaleKangaroo = k.getStartPoint().getFemaleKangaroo();
+                double mostFoodLeft = -1;
+                int mostFemaleKangaroo = -1;
                 boolean moved = false;
                 boolean equalMostFood = false;
                 double foodNeededToJump = 0;
@@ -969,6 +910,7 @@ public class Assignment extends Application {
                 for (int i = 0; i < pathTableList.size(); i++) {
                     if (pathTableList.get(i).getSource().equals(k.getStartPoint().getId())) {
                         //Check starting point of kangaroo same with source
+                        //actually no need check start point d i think i got ald
                         if (pathTableList.get(i).getP().getCurrentKangarooNumber()
                                 < pathTableList.get(i).getP().getSize()) {
                             //Check current kangaroo number at destination, whether full or not
@@ -1007,6 +949,7 @@ public class Assignment extends Application {
                                  */
 
                                 int female = pathTableList.get(i).getP().getFemaleKangaroo();
+                                System.out.println("Point with female : " + pathTableList.get(i).getP().getId());
                                 boolean isPointColonised = pathTableList.get(i).getP().isIsColonised();
                                 boolean isAbleToJump;
                                 //Determine if the point is already colonised or not
