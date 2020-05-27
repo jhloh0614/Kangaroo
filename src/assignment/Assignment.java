@@ -950,14 +950,6 @@ public class Assignment extends Application {
                                  */
 
                                 int female = pathTableList.get(i).getP().getFemaleKangaroo();
-                                while(female == 0 && i < pathTableList.size()){
-                                    //If no more food available on the point
-                                    //The point may not have female kangaroo too
-                                    //So the if no female kangaroo
-                                    //The kangaroo wont even move to this point
-                                    i++;
-                                    female = pathTableList.get(i).getP().getFemaleKangaroo();
-                                }
                                 boolean isPointColonised = pathTableList.get(i).getP().isIsColonised();
                                 boolean isAbleToJump;
                                 //Determine if the point is already colonised or not
