@@ -939,7 +939,7 @@ public class Assignment extends Application {
                         if (pathtablelist.get(i).getP().getFood() > 0) {
                             foodNeeded = pathtablelist.get(i).getObstacleheight() + (0.5 * k.getNoOfFood());
                             //Check whether the food is enough to jump there or not
-                            if (foodNeeded > (k.getNoOfFood() + pathtablelist.get(i).getP().getFood())) {
+                            if ((k.getNoOfFood() + pathtablelist.get(i).getP().getFood()) >= foodNeeded) {
                                 double foodLeft = pathtablelist.get(i).getP().getFood() - foodNeeded;
                                 if (foodLeft > mostFoodLeft) {
                                     mostFoodLeft = foodLeft;
