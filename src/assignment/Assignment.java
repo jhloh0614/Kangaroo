@@ -1,5 +1,6 @@
 package assignment;
 
+import com.sun.javafx.geom.Curve;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -7,6 +8,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Random;
+import javafx.animation.PathTransition;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -30,16 +33,18 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
 public class Assignment extends Application {
 
@@ -682,10 +687,22 @@ public class Assignment extends Application {
             ImageView imageView = new ImageView(kangaroo1);
             imageView.setFitWidth(200);
             imageView.setFitHeight(200);
-            imageView.setX(55);
+            imageView.setX(150);
             imageView.setY(15);
             imageView.setPreserveRatio(true);
+            Path path = new Path();
+            path.getElements().add(new MoveTo(0, 15));
+//            path.getElements().add(new CubicCurveTo());
+            PathTransition pathTransition = new PathTransition();
+            pathTransition.setDuration(Duration.seconds(2));
+            pathTransition.setPath(new Line(300,55,0,55));
+            pathTransition.setNode(imageView);
+            pathTransition.setAutoReverse(false);
+//            pathTransition.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
+            pathTransition.setCycleCount(Timeline.INDEFINITE);
+            pathTransition.play();
             root.getChildren().add(imageView);
+            
         } catch (FileNotFoundException e) {
             System.out.println("File Not Found");
         }
