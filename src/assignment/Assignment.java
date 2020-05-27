@@ -207,12 +207,14 @@ public class Assignment extends Application {
                         pathinput, add, ok);
                 hb.setSpacing(5);
                 ok.setOnAction(new EventHandler<ActionEvent>() {
-
+                    
+                    private int totalAllPointsKangaroo = 0;
+                    
                     private int current = 0;
                     //index of current point
                     private int entry = 0;
 //                    private boolean twoWay = false;
-
+                    
                     //ensure a 2-way connection
                     @Override
                     public void handle(ActionEvent e) {
@@ -266,8 +268,21 @@ public class Assignment extends Application {
                                     noOfKangaroo.setTitle("Number Of Kangaroo(s)");
                                     noOfKangaroo.setHeaderText("Enter the number of Kangaroo");
                                     noOfKangaroo.showAndWait();
+                                    
+                                    
+                                    for (int i = 0; i < points.size(); i++) {
+                                        totalAllPointsKangaroo += points.get(i).getSize();
+                                    }
+                                    
                                     MAXKANGAROO = Integer.parseInt(noOfKangaroo.getEditor().getText());
-
+                                    if(MAXKANGAROO > totalAllPointsKangaroo){
+                                        Alert exceed = new Alert(Alert.AlertType.WARNING);
+                                        exceed.setTitle("Error");
+                                        exceed.setHeaderText("Exceeded " + (MAXKANGAROO - totalAllPointsKangaroo) + " kangaroo(s)");
+                                        exceed.showAndWait();
+                                        return;
+                                    }
+                                    
                                     TableColumn startPoint, gender, noOfFood;
                                     startPoint = new TableColumn("Initial Point");
                                     gender = new TableColumn("Gender");
@@ -289,6 +304,19 @@ public class Assignment extends Application {
                                     ok.setOnAction(new EventHandler<ActionEvent>() {
                                         @Override
                                         public void handle(ActionEvent e) {
+                                            int totalKangaroo = 0;
+                                            for (int i = 0; i < points.size(); i++) {
+                                                totalKangaroo += points.get(i).getCurrentKangarooNumber();
+                                            }
+                                            System.out.println("current kangaroo number : " + totalKangaroo);
+                                            if (totalKangaroo < MAXKANGAROO) {
+                                                Alert notEnough = new Alert(Alert.AlertType.WARNING);
+                                                notEnough.setTitle("Error");
+                                                notEnough.setHeaderText("Need to input " + (MAXKANGAROO - totalKangaroo) + " more kangaroo(s)");
+                                                notEnough.showAndWait();
+                                                return;
+                                            }
+                                            
                                             start();
                                         }
                                     });
@@ -310,22 +338,24 @@ public class Assignment extends Application {
                                             for (int i = 0; i < points.size(); i++) {
                                                 if (points.get(i).getId().equals(startPointInput.getText())) {
                                                     start = points.get(i);
-                                                    if(genderInput.getText().equalsIgnoreCase("M") ||
-                                                            genderInput.getText().equalsIgnoreCase("Male")){
+                                                    if (genderInput.getText().equalsIgnoreCase("M")
+                                                            || genderInput.getText().equalsIgnoreCase("Male")) {
                                                         start.setMaleKangaroo(start.getMaleKangaroo() + 1);
-                                                        
-                                                    }
-                                                    else{
+
+                                                    } else if (genderInput.getText().equalsIgnoreCase("F")
+                                                            || genderInput.getText().equalsIgnoreCase("Female")) {
                                                         start.setFemaleKangaroo(start.getFemaleKangaroo() + 1);
                                                     }
                                                     //reduce the size as added 1 kangaroo to the point
                                                     //Jh: Max Size shouldnt be reduced, should be constant d
-                                                    
+
                                                     break;
                                                 } else if (i == points.size() - 1 && !points.get(i).getId().equals(startPointInput.getText())) {
                                                     error = true;
                                                 }
                                             }
+                                            System.out.println("current size : " + start.getCurrentKangarooNumber());
+                                            System.out.println("max size :" + start.getSize());
                                             if (start.getCurrentKangarooNumber() > start.getSize()) {
                                                 //Check whether the number of kangaroo on each point exceed the maximum or not                                                
                                                 Alert exceed = new Alert(Alert.AlertType.WARNING);
@@ -889,7 +919,7 @@ public class Assignment extends Application {
                 System.exit(0);
             }
         });
-        
+
     }
 
     public static void move(Kangaroo k) {
