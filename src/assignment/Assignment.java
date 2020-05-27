@@ -56,7 +56,7 @@ public class Assignment extends Application {
     private int MAXKANGAROO;
     private int noOfRow;
     private int POINTNUMBER;
-    private int noOfColony;
+    private int colonyThreshold;
 
     @Override
     public void start(Stage primaryStage) {
@@ -267,6 +267,7 @@ public class Assignment extends Application {
 
                             Button ok = new Button("OK");
                             ok.setOnAction(new EventHandler<ActionEvent>() {
+                                @Override
                                 public void handle(ActionEvent e) {
                                     pathstage.close();
                                     TextInputDialog noOfKangaroo = new TextInputDialog();
@@ -279,12 +280,15 @@ public class Assignment extends Application {
                                     }
 
                                     MAXKANGAROO = Integer.parseInt(noOfKangaroo.getEditor().getText());
-                                    if (MAXKANGAROO > totalAllPointsKangaroo) {
+                                    System.out.println("total all points kangaroo : " + totalAllPointsKangaroo);
+                                    while (MAXKANGAROO > totalAllPointsKangaroo) {
                                         Alert exceed = new Alert(Alert.AlertType.WARNING);
                                         exceed.setTitle("Error");
                                         exceed.setHeaderText("Exceeded " + (MAXKANGAROO - totalAllPointsKangaroo) + " kangaroo(s)");
                                         exceed.showAndWait();
-                                        return;
+                                        noOfKangaroo.getEditor().clear();
+                                        noOfKangaroo.showAndWait();
+                                        MAXKANGAROO = Integer.parseInt(noOfKangaroo.getEditor().getText());
                                     }
 
                                     TableColumn startPoint, gender, noOfFood;
@@ -322,8 +326,9 @@ public class Assignment extends Application {
                                             }
                                             TextInputDialog colony = new TextInputDialog();
                                             colony.setTitle("Colony");
-                                            colony.setHeaderText("Enter the number of colony : ");
-                                            noOfColony = Integer.parseInt(colony.getEditor().getText());
+                                            colony.setHeaderText("Enter the threshold for colony : ");
+                                            colony.showAndWait();
+                                            colonyThreshold = Integer.parseInt(colony.getEditor().getText());
 
                                             start();
                                         }
@@ -672,7 +677,6 @@ public class Assignment extends Application {
         btn.setLayoutY(125);
         Pane root = new Pane();
         root.getChildren().add(btn);
-        
 
         Scene scene = new Scene(root, 300, 250);
         try {
