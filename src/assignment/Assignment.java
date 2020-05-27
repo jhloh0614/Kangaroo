@@ -846,8 +846,7 @@ public class Assignment extends Application {
         while (true) {
             //Determine is there any possible moves there
             boolean isMoveable = false;
-            for (int i = 0; i < kangarooList.size(); i++) {
-                isMoveable = false;
+            for (int i = 0; i < kangarooList.size(); i++) {           
                 Kangaroo k = kangarooList.get(i);
                 System.out.println("Kangaroo " + i + " gender is " + k.getGender());
                 boolean kangarooMoves = move(k);
@@ -855,7 +854,7 @@ public class Assignment extends Application {
                     isMoveable = true;
                 }
                 
-                System.out.println("Kangaroo " + i + " isMoveable = " + isMoveable );
+                System.out.println("Kangaroo " + i + " kangarooMoves = " + kangarooMoves );
             }
             //If no moves then output result
             if (!isMoveable) {
@@ -890,6 +889,7 @@ public class Assignment extends Application {
                 break;
             }
         }
+        System.out.println("isFoodAvailableOnMap: "+isFoodAvailableOnMap);
         if(k.getGender().equalsIgnoreCase("F") || k.getGender().equalsIgnoreCase("Female")){
             return false;
         }
@@ -900,7 +900,7 @@ public class Assignment extends Application {
             if (!k.isColonised()) {
                 //why go set the colony threshold
                 //i simply put d, because idk where u put ma, now know d lo
-                double mostFoodLeft = -1;
+                double mostFoodLeft = -999;
                 int mostFemaleKangaroo = -1;
                 boolean moved = false;
                 boolean equalMostFood = false;
@@ -1009,10 +1009,18 @@ public class Assignment extends Application {
                     if (!isFoodAvailableOnMap) {
                         //The point does not have a colony yet
                         if (!p.isIsColonised()) {
+                            System.out.println(p.toString2()+ " kangaroo count: "+p.getCurrentKangarooNumber());
                             if (p.getCurrentKangarooNumber() == colonyThreshold) {
                                 p.setIsColonised(true);
                                 sumOfColony++;
                                 k.setColony(p);
+                                for (int i = 0; i < kangarooList.size(); i++) {
+                                    Kangaroo tempK = kangarooList.get(i);
+                                    if(tempK.getCurrentPoint().equals(p)){
+                                        tempK.setColonised(true);
+                                        tempK.setColony(p);
+                                    }
+                                }
                             }
                         } else {
                             k.setColony(p);
@@ -1037,7 +1045,9 @@ public class Assignment extends Application {
                         k.setNoOfFood(foodAvailable + k.getNoOfFood());
                         p.setFood(foodAvailable - k.getNoOfFood());
                     }
-
+                    System.out.println("Kangaroo at "+k.getCurrentPoint().toString2());
+                    System.out.println("Kangaroo Food: "+k.getNoOfFood());
+                    System.out.println("Point food: "+k.getCurrentPoint().getFood());
                     return true;
                 } else {
 
