@@ -694,10 +694,10 @@ public class Assignment extends Application {
             path.getElements().add(new MoveTo(0, 15));
 //            path.getElements().add(new CubicCurveTo());
             PathTransition pathTransition = new PathTransition();
-            pathTransition.setDuration(Duration.seconds(2));
+            pathTransition.setDuration(Duration.seconds(3));
             pathTransition.setPath(new Line(300,55,0,55));
             pathTransition.setNode(imageView);
-            pathTransition.setAutoReverse(false);
+//            pathTransition.setAutoReverse(true);
 //            pathTransition.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
             pathTransition.setCycleCount(Timeline.INDEFINITE);
             pathTransition.play();
@@ -886,7 +886,8 @@ public class Assignment extends Application {
         Scene scene = new Scene(pane);
         scene.setFill(Color.YELLOWGREEN);
         stage.setScene(scene);
-
+        //or move can put here
+        
         stage.show();
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
