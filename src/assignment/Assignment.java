@@ -1,5 +1,7 @@
 package assignment;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,6 +26,8 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -320,7 +324,7 @@ public class Assignment extends Application {
                                             colony.setTitle("Colony");
                                             colony.setHeaderText("Enter the number of colony : ");
                                             noOfColony = Integer.parseInt(colony.getEditor().getText());
-                                            
+
                                             start();
                                         }
                                     });
@@ -356,7 +360,7 @@ public class Assignment extends Application {
                                                     error = true;
                                                 }
                                             }
-                                            System.out.println("current point : "+start.getId());
+                                            System.out.println("current point : " + start.getId());
                                             System.out.println("current size : " + start.getCurrentKangarooNumber());
                                             System.out.println("max size :" + start.getSize());
                                             if (start.getCurrentKangarooNumber() > start.getSize()) {
@@ -664,15 +668,30 @@ public class Assignment extends Application {
                 });
             }
         });
-
-        StackPane root = new StackPane();
+        btn.setLayoutX(125);
+        btn.setLayoutY(125);
+        Pane root = new Pane();
         root.getChildren().add(btn);
+        
 
         Scene scene = new Scene(root, 300, 250);
+        try {
+            Image kangaroo1 = new Image(new FileInputStream("Kangaroo-Left.gif"));
+            ImageView imageView = new ImageView(kangaroo1);
+            imageView.setFitWidth(200);
+            imageView.setFitHeight(200);
+            imageView.setX(55);
+            imageView.setY(15);
+            imageView.setPreserveRatio(true);
+            root.getChildren().add(imageView);
+        } catch (FileNotFoundException e) {
+            System.out.println("File Not Found");
+        }
 
         primaryStage.setTitle("Kangaroo");
         primaryStage.setResizable(false);
         primaryStage.setScene(scene);
+
         primaryStage.show();
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -925,13 +944,13 @@ public class Assignment extends Application {
                                  */
                                 int female = pathTableList.get(i).getP().getFemaleKangaroo();
                                 boolean isAbleToJump = k.getNoOfFood() >= foodNeededToJump;
-                                if(female>mostFemaleKangaroo && isAbleToJump){
-                                    mostFemaleKangaroo = female;                             
+                                if (female > mostFemaleKangaroo && isAbleToJump) {
+                                    mostFemaleKangaroo = female;
                                     moved = true;
                                     tempI = i;
                                     //To be deducted from the kangaroo pouch at (moved) condition
                                     mostFoodLeft = 0 - foodNeededToJump;
-                                    
+
                                 }
                             }
                         }
