@@ -951,7 +951,9 @@ public class Assignment extends Application {
                                  */
 
                                 int female = pathTableList.get(i).getP().getFemaleKangaroo();
-                                System.out.println("Point with female : " + pathTableList.get(i).getP().getId());
+                                if(female == 0){
+                                    return false;
+                                }
                                 boolean isPointColonised = pathTableList.get(i).getP().isIsColonised();
                                 boolean isAbleToJump;
                                 //Determine if the point is already colonised or not
