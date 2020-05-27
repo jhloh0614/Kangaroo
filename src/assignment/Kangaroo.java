@@ -8,6 +8,8 @@ public class Kangaroo {
     private int noOfFood;
     private String gender;
     private int maxPouchFood;
+    private boolean isColonised;
+    private Point colony;
     private boolean canTravelTo;
 
     //The arguments need to change from int noOfFood --> int maxPouchFood    
@@ -17,7 +19,25 @@ public class Kangaroo {
         this.gender = gender;
         this.currentPoint = startPoint;
         this.noOfFood = 0;
+        this.isColonised = false;
     }
+
+    public boolean isIsColonised() {
+        return isColonised;
+    }
+
+    public void setIsColonised(boolean isColonised) {
+        this.isColonised = isColonised;
+    }
+
+    public Point getColony() {
+        return colony;
+    }
+
+    public void setColony(Point colony) {
+        this.colony = colony;
+    }
+    
 
     public Point getCurrentPoint() {
         return currentPoint;
