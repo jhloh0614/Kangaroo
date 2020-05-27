@@ -307,7 +307,7 @@ public class Assignment extends Application {
                                     TextField noOfFoodInput = new TextField();
                                     startPointInput.setPromptText("Initial Point of Kangaroo");
                                     genderInput.setPromptText("Gender of Kangaroo");
-                                    noOfFoodInput.setPromptText("Number of Food in Pouch");
+                                    noOfFoodInput.setPromptText("Maximum Food in Pouch");
                                     Button ok = new Button("OK");
                                     ok.setOnAction(new EventHandler<ActionEvent>() {
                                         @Override
@@ -365,9 +365,6 @@ public class Assignment extends Application {
                                                     error = true;
                                                 }
                                             }
-                                            System.out.println("current point : " + start.getId());
-                                            System.out.println("current size : " + start.getCurrentKangarooNumber());
-                                            System.out.println("max size :" + start.getSize());
                                             if (start.getCurrentKangarooNumber() > start.getSize()) {
                                                 //Check whether the number of kangaroo on each point exceed the maximum or not                                                
                                                 Alert exceed = new Alert(Alert.AlertType.WARNING);
