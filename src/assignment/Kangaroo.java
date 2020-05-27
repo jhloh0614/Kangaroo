@@ -10,13 +10,13 @@ public class Kangaroo {
     private int maxPouchFood;
     private boolean canTravelTo;
 
-    //The arguments need to change from int noOfFood --> int maxPouchFood
-    //You change ba because I scare I change here will affect the input there
-    public Kangaroo(Point startPoint, int noOfFood, String gender) {
+    //The arguments need to change from int noOfFood --> int maxPouchFood    
+    public Kangaroo(Point startPoint, int maxPouchFood, String gender) {
         this.startPoint = startPoint;
-        this.noOfFood = noOfFood;
+        this.maxPouchFood = maxPouchFood;
         this.gender = gender;
         this.currentPoint = startPoint;
+        this.noOfFood = 0;
     }
 
     public Point getCurrentPoint() {
