@@ -61,7 +61,8 @@ public class Assignment extends Application {
     private int MAXKANGAROO;
     private int noOfRow;
     private int POINTNUMBER;
-    private static int colonyThreshold;
+    private static int colonyThreshold = 0;
+    private static int sumOfColony = 0;
 
     @Override
     public void start(Stage primaryStage) {
@@ -902,7 +903,8 @@ public class Assignment extends Application {
                 k.setNoOfFood(k.getStartPoint().getFood());
                 k.getStartPoint().setFood(0);
             }
-            System.out.println("Kangaroo at point: " + k.getStartPoint() + " has food: " + k.getNoOfFood());
+            System.out.println("Kangaroo at point: " + k.getStartPoint().toString2() + " has food: " 
+                    + k.getNoOfFood() + " point left food: "+k.getStartPoint().getFood());
         }
 
         while (true) {
@@ -917,6 +919,12 @@ public class Assignment extends Application {
             }
             //If no moves then output result
             if (!isMoveable) {
+                System.out.println("Number of colonies: "+sumOfColony);
+                for (int i = 0; i < kangarooList.size(); i++) {
+                    Kangaroo k = kangarooList.get(i);
+                    System.out.println("Kangaroo test: "+k.getCurrentPoint().toString2() +
+                            " Gender: "+k.getGender()+" Food in pouch: "+k.getNoOfFood());
+                }
                 break;
             }
 
@@ -1058,6 +1066,7 @@ public class Assignment extends Application {
                         if (!p.isIsColonised()) {
                             if (p.getCurrentKangarooNumber() == colonyThreshold) {
                                 p.setIsColonised(true);
+                                sumOfColony++;
                                 k.setColony(p);
                             }
                         } else {
