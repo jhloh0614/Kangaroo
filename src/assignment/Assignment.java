@@ -335,7 +335,7 @@ public class Assignment extends Application {
                                             colony.showAndWait();
                                             colonyThreshold = Integer.parseInt(colony.getEditor().getText());
                                             //add move here
-                                            
+
                                             start();
                                         }
                                     });
@@ -695,14 +695,14 @@ public class Assignment extends Application {
 //            path.getElements().add(new CubicCurveTo());
             PathTransition pathTransition = new PathTransition();
             pathTransition.setDuration(Duration.seconds(3));
-            pathTransition.setPath(new Line(300,55,0,55));
+            pathTransition.setPath(new Line(300, 55, 0, 55));
             pathTransition.setNode(imageView);
 //            pathTransition.setAutoReverse(true);
 //            pathTransition.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
             pathTransition.setCycleCount(Timeline.INDEFINITE);
             pathTransition.play();
             root.getChildren().add(imageView);
-            
+
         } catch (FileNotFoundException e) {
             System.out.println("File Not Found");
         }
@@ -887,7 +887,41 @@ public class Assignment extends Application {
         scene.setFill(Color.YELLOWGREEN);
         stage.setScene(scene);
         //or move can put here
-        
+
+        //testing for start run
+        //Kangaroo take food from starting point and keep in pouch
+        for (int i = 0; i < kangarooList.size(); i++) {
+            Kangaroo k = kangarooList.get(i);
+            if (k.getStartPoint().getFood() == 0) {
+                continue;
+            }
+            if (k.getStartPoint().getFood() > k.getMaxPouchFood()) {
+                k.setNoOfFood(k.getMaxPouchFood());
+                k.getStartPoint().setFood(k.getStartPoint().getFood() - k.getMaxPouchFood());
+            } else {
+                k.setNoOfFood(k.getStartPoint().getFood());
+                k.getStartPoint().setFood(0);
+            }
+            System.out.println("Kangaroo at point: " + k.getStartPoint() + " has food: " + k.getNoOfFood());
+        }
+
+        while (true) {
+            //Determine is there any possible moves there
+            boolean isMoveable = false;
+            for (int i = 0; i < kangarooList.size(); i++) {
+                Kangaroo k = kangarooList.get(i);
+                boolean kangarooMoves = move(k);
+                if (kangarooMoves) {
+                    isMoveable = true;
+                }
+            }
+            //If no moves then output result
+            if (!isMoveable) {
+                break;
+            }
+
+        }
+
         stage.show();
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -912,7 +946,7 @@ public class Assignment extends Application {
         if (k.getGender().equalsIgnoreCase("M") || k.getGender().equalsIgnoreCase("Male")) {
 
             //Check whether the kangaroo already in a colony            
-            if (!k.isColonised()) {             
+            if (!k.isColonised()) {
                 //why go set the colony threshold
                 //i simply put d, because idk where u put ma, now know d lo
                 double mostFoodLeft = k.getStartPoint().getFood();
@@ -938,7 +972,7 @@ public class Assignment extends Application {
                                         //Check kangaroo's current food and the destination food
                                         //If greater than the food needed, then can jump
                                         //Assume the kangaroo can take the destination food even he havent jump
-                                        double foodLeftOnPoint = pathTableList.get(i).getP().getFood() - foodNeededToJump;                                   
+                                        double foodLeftOnPoint = pathTableList.get(i).getP().getFood() - foodNeededToJump;
                                         //Check for most foodLeft
                                         if (foodLeftOnPoint > mostFoodLeft) {
                                             mostFoodLeft = foodLeftOnPoint;
@@ -964,7 +998,6 @@ public class Assignment extends Application {
                                  * points and food in pouch enough or not
                                  */
 
-                                //Colonised add at here
                                 int female = pathTableList.get(i).getP().getFemaleKangaroo();
                                 boolean isPointColonised = pathTableList.get(i).getP().isIsColonised();
                                 boolean isAbleToJump;
