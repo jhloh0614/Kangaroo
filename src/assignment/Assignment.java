@@ -47,7 +47,7 @@ public class Assignment extends Application {
     private TableView pathtable = new TableView();
     private TableView kangarooTable = new TableView();
     static ObservableList<Point> pathlist = FXCollections.observableArrayList();
-    static ObservableList<PointPath> pathtablelist = FXCollections.observableArrayList();
+    static ObservableList<PointPath> pathTableList = FXCollections.observableArrayList();
     static ObservableList<Kangaroo> kangarooList = FXCollections.observableArrayList();
     private int MAXKANGAROO;
     private int noOfRow;
@@ -558,7 +558,7 @@ public class Assignment extends Application {
                                         ptconnected.clear();
                                         ptid.clear();
                                         obstacleheightinput.clear();
-                                        pathtablelist.add(path1);
+                                        pathTableList.add(path1);
                                         pathlist.add(destinationPoint);
                                         entry++;
                                         if (entry == points.get(current).getPath()) {
@@ -602,7 +602,7 @@ public class Assignment extends Application {
                                 }
                             });
 
-                            pathtable.setItems(pathtablelist);
+                            pathtable.setItems(pathTableList);
                             pathtable.getColumns().addAll(sourceid, link, pathid, obstacleheight);
 
                             pathhb.getChildren().addAll(sourceidinput, ptconnected, ptid,
@@ -624,7 +624,7 @@ public class Assignment extends Application {
                             pathstage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                                 @Override
                                 public void handle(WindowEvent t) {
-                                    pathtablelist.clear();
+                                    pathTableList.clear();
                                     pathlist.clear();
                                     pathstage.close();
 
@@ -775,21 +775,21 @@ public class Assignment extends Application {
             figure.add(sp);
             circle.add(c);
         }
-        for (int i = 0; i < pathtablelist.size(); i++) {
+        for (int i = 0; i < pathTableList.size(); i++) {
             int startX, startY, endX, endY;
             Line l = new Line();
             boolean sameLine = false;
             Point source = null;
             for (int j = 0; j < points.size(); j++) {
-                if (pathtablelist.get(i).getSource().equals(points.get(j).getId())) {
+                if (pathTableList.get(i).getSource().equals(points.get(j).getId())) {
                     source = points.get(j);
                     break;
                 }
             }
             startX = source.getX();
             startY = source.getY();
-            endX = pathtablelist.get(i).getP().getX();
-            endY = pathtablelist.get(i).getP().getY();
+            endX = pathTableList.get(i).getP().getX();
+            endY = pathTableList.get(i).getP().getY();
             for (int k = 0; k < lineUsed.size(); k++) {
                 System.out.println("Array: " + Arrays.toString(lineUsed.get(k)));
                 System.out.println("Points: " + startX + " " + startY + " " + endX + " " + endY);
@@ -826,7 +826,7 @@ public class Assignment extends Application {
 
             double midPointX = (l.getStartX() + l.getEndX()) / 2 - 5;
             double midPointY = (l.getStartY() + l.getEndY()) / 2 + 5;
-            Text id = new Text(pathtablelist.get(i).getPathid());
+            Text id = new Text(pathTableList.get(i).getPathid());
             id.setX(midPointX);
             id.setY(midPointY);
             id.setFont(Font.font("Verdana", 20));
@@ -945,16 +945,21 @@ public class Assignment extends Application {
                 int tempI = -1;
 
                 //Check for which point will result in most food after travelling
-                for (int i = 0; i < pathtablelist.size(); i++) {
-                    if (pathtablelist.get(i).getSource().equals(k.getStartPoint().getId())) {
-                        if (pathtablelist.get(i).getP().getCurrentKangarooNumber()
-                                < pathtablelist.get(i).getP().getSize()) {
-                            foodNeededToJump = pathtablelist.get(i).getObstacleheight() + (0.5 * k.getNoOfFood());
+                for (int i = 0; i < pathTableList.size(); i++) {
+                    if (pathTableList.get(i).getSource().equals(k.getStartPoint().getId())) {
+                        //Check starting point of kangaroo same with source
+                        if (pathTableList.get(i).getP().getCurrentKangarooNumber()
+                                < pathTableList.get(i).getP().getSize()) {
+                            //Check current kangaroo number at destination, whether full or not
+                            foodNeededToJump = pathTableList.get(i).getObstacleheight() + (0.5 * k.getNoOfFood());
                             if (isFoodAvailableOnMap) {
-                                if (pathtablelist.get(i).getP().getFood() > 0) {
+                                if (pathTableList.get(i).getP().getFood() > 0) {
                                     //Check whether the food is enough to jump there or not
-                                    if ((k.getNoOfFood() + pathtablelist.get(i).getP().getFood()) >= foodNeededToJump) {
-                                        double foodLeftOnPoint = pathtablelist.get(i).getP().getFood() - foodNeededToJump;
+                                    if ((k.getNoOfFood() + pathTableList.get(i).getP().getFood()) >= foodNeededToJump) {
+                                        //Check kangaroo's current food and the destination food
+                                        //If greater than the food needed, then can jump
+                                        //Assume the kangaroo can take the destination food even he havent jump
+                                        double foodLeftOnPoint = pathTableList.get(i).getP().getFood() - foodNeededToJump;
                                         //**Check whether the point have a colony or not     
                                         //Check for most foodLeft
                                         if (foodLeftOnPoint > mostFoodLeft) {
@@ -980,7 +985,7 @@ public class Assignment extends Application {
                                  * determined by female kangaroo in adjacent
                                  * points and food in pouch enough or not
                                  */
-                                int female = pathtablelist.get(i).getP().getFemaleKangaroo();
+                                int female = pathTableList.get(i).getP().getFemaleKangaroo();
                                 boolean isAbleToJump = k.getNoOfFood() >= foodNeededToJump;
                                 if(female>mostFemaleKangaroo && isAbleToJump){
                                     mostFemaleKangaroo = female;                             
@@ -1002,7 +1007,7 @@ public class Assignment extends Application {
                         int mostFemale = -999;
                         tempI = tempCounter.get(0);
                         for (int i = 0; i < tempCounter.size(); i++) {
-                            PointPath p = pathtablelist.get(tempCounter.get(i));
+                            PointPath p = pathTableList.get(tempCounter.get(i));
                             if (p.getP().getFemaleKangaroo() > mostFemale) {
                                 mostFemale = p.getP().getFemaleKangaroo();
                                 tempI = tempCounter.get(i);
@@ -1012,7 +1017,7 @@ public class Assignment extends Application {
                     }
 
                     //Moving the kangaroo to new point and update all the variables
-                    Point p = pathtablelist.get(tempI).getP();
+                    Point p = pathTableList.get(tempI).getP();
 
                     //Remove the kangaroo from original point, not sure will work or not                
                     k.getCurrentPoint().setMaleKangaroo(k.getCurrentPoint().getMaleKangaroo() - 1);
