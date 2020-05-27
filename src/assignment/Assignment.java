@@ -883,7 +883,7 @@ public class Assignment extends Application {
 
     }
 
-    public static void move(Kangaroo k) {
+    public static boolean move(Kangaroo k) {
         //Check for availability of food on map
         boolean isFoodAvailableOnMap = false;
         for (int i = 0; i < points.size(); i++) {
@@ -897,8 +897,9 @@ public class Assignment extends Application {
 
             //Check whether the kangaroo already in a colony            
             if (!k.isIsColonised()) {
-                double mostFoodLeft = -999;
-                int mostFemaleKangaroo = -999;
+                int colonyThreshold = 3;
+                double mostFoodLeft = k.getStartPoint().getFood();
+                int mostFemaleKangaroo = k.getStartPoint().getFemaleKangaroo();
                 boolean moved = false;
                 boolean equalMostFood = false;
                 double foodNeededToJump = 0;
@@ -946,8 +947,18 @@ public class Assignment extends Application {
                                  * determined by female kangaroo in adjacent
                                  * points and food in pouch enough or not
                                  */
+
+                                //Colonised add at here
                                 int female = pathTableList.get(i).getP().getFemaleKangaroo();
-                                boolean isAbleToJump = k.getNoOfFood() >= foodNeededToJump;
+                                boolean isPointColonised = pathTableList.get(i).getP().isIsColonised();
+                                boolean isAbleToJump;
+                                //Determine if the point is already colonised or not
+                                if (isPointColonised) {
+                                    isAbleToJump = k.getNoOfFood() - foodNeededToJump >= pathTableList.get(i)
+                                            .getP().getCurrentKangarooNumber();
+                                } else {
+                                    isAbleToJump = k.getNoOfFood() >= foodNeededToJump;
+                                }
                                 if (female > mostFemaleKangaroo && isAbleToJump) {
                                     mostFemaleKangaroo = female;
                                     moved = true;
@@ -983,9 +994,21 @@ public class Assignment extends Application {
                     //Remove the kangaroo from original point, not sure will work or not                
                     k.getCurrentPoint().setMaleKangaroo(k.getCurrentPoint().getMaleKangaroo() - 1);
                     k.setCurrentPoint(p);
-
                     p.setMaleKangaroo(p.getMaleKangaroo() + 1);
 //                    p.setSize(p.getSize() - 1);
+
+                    //There are no more food on the map
+                    if (!isFoodAvailableOnMap) {
+                        //The point does not have a colony yet
+                        if (!p.isIsColonised()) {
+                            if (p.getCurrentKangarooNumber() == colonyThreshold) {
+                                p.setIsColonised(true);
+                                k.setColony(p);
+                            }
+                        } else {
+                            k.setColony(p);
+                        }
+                    }
 
                     int foodAvailable = (int) mostFoodLeft;
                     if (foodAvailable < 0) {
@@ -1006,14 +1029,18 @@ public class Assignment extends Application {
                         p.setFood(foodAvailable - k.getNoOfFood());
                     }
 
-                    //return true
+                    return true;
                 } else {
 
-                    //return false
+                    return false;
                     //To be determined what to do
                 }
+            } else {
+                return false;
             }
 
+        } else {
+            return false;
         }
     }
 }
