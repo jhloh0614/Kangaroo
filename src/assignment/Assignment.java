@@ -207,14 +207,14 @@ public class Assignment extends Application {
                         pathinput, add, ok);
                 hb.setSpacing(5);
                 ok.setOnAction(new EventHandler<ActionEvent>() {
-                    
+
                     private int totalAllPointsKangaroo = 0;
-                    
+
                     private int current = 0;
                     //index of current point
                     private int entry = 0;
 //                    private boolean twoWay = false;
-                    
+
                     //ensure a 2-way connection
                     @Override
                     public void handle(ActionEvent e) {
@@ -268,21 +268,20 @@ public class Assignment extends Application {
                                     noOfKangaroo.setTitle("Number Of Kangaroo(s)");
                                     noOfKangaroo.setHeaderText("Enter the number of Kangaroo");
                                     noOfKangaroo.showAndWait();
-                                    
-                                    
+
                                     for (int i = 0; i < points.size(); i++) {
                                         totalAllPointsKangaroo += points.get(i).getSize();
                                     }
-                                    
+
                                     MAXKANGAROO = Integer.parseInt(noOfKangaroo.getEditor().getText());
-                                    if(MAXKANGAROO > totalAllPointsKangaroo){
+                                    if (MAXKANGAROO > totalAllPointsKangaroo) {
                                         Alert exceed = new Alert(Alert.AlertType.WARNING);
                                         exceed.setTitle("Error");
                                         exceed.setHeaderText("Exceeded " + (MAXKANGAROO - totalAllPointsKangaroo) + " kangaroo(s)");
                                         exceed.showAndWait();
                                         return;
                                     }
-                                    
+
                                     TableColumn startPoint, gender, noOfFood;
                                     startPoint = new TableColumn("Initial Point");
                                     gender = new TableColumn("Gender");
@@ -316,7 +315,7 @@ public class Assignment extends Application {
                                                 notEnough.showAndWait();
                                                 return;
                                             }
-                                            
+
                                             start();
                                         }
                                     });
@@ -939,25 +938,28 @@ public class Assignment extends Application {
                             < pathtablelist.get(i).getP().getSize()) {
                         if (pathtablelist.get(i).getP().getFood() > 0) {
                             foodNeeded = pathtablelist.get(i).getObstacleheight() + (0.5 * k.getNoOfFood());
-                            double foodLeft = pathtablelist.get(i).getP().getFood() - foodNeeded;
-                            if (foodLeft > mostFoodLeft) {
-                                mostFoodLeft = foodLeft;
-                                equalMostFood = false;
-                                moved = true;
-                                tempI = i;
-                                //tempI is the point with highest food
-                                tempCounter = new ArrayList();
-                                //refresh the list if found another higher food point
-                                tempCounter.add(tempI);
-                            } else if (foodLeft == mostFoodLeft) {
-                                moved = true;
-                                equalMostFood = true;
-                                tempCounter.add(i);
-                            }
+                            //Check whether the food is enough to jump there or not
+                            if (foodNeeded > (k.getNoOfFood() + pathtablelist.get(i).getP().getFood())) {
+                                double foodLeft = pathtablelist.get(i).getP().getFood() - foodNeeded;
+                                if (foodLeft > mostFoodLeft) {
+                                    mostFoodLeft = foodLeft;
+                                    equalMostFood = false;
+                                    moved = true;
+                                    tempI = i;
+                                    //tempI is the point with highest food
+                                    tempCounter = new ArrayList();
+                                    //refresh the list if found another higher food point
+                                    tempCounter.add(tempI);
+                                } else if (foodLeft == mostFoodLeft) {
+                                    moved = true;
+                                    equalMostFood = true;
+                                    tempCounter.add(i);
+                                }
 //                            else if(foodLeft < 0){
 //                                moved = true;
 //                                foodLeft = -foodLeft;
 //                            }
+                            }
                         }
                     }
                 }
