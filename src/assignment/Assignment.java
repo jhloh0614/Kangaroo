@@ -61,7 +61,7 @@ public class Assignment extends Application {
     private int MAXKANGAROO;
     private int noOfRow;
     private int POINTNUMBER;
-    private int colonyThreshold;
+    private static int colonyThreshold;
 
     @Override
     public void start(Stage primaryStage) {
@@ -912,9 +912,9 @@ public class Assignment extends Application {
         if (k.getGender().equalsIgnoreCase("M") || k.getGender().equalsIgnoreCase("Male")) {
 
             //Check whether the kangaroo already in a colony            
-            if (!k.isColonised()) {
-                int colonyThreshold = 3;
+            if (!k.isColonised()) {             
                 //why go set the colony threshold
+                //i simply put d, because idk where u put ma, now know d lo
                 double mostFoodLeft = k.getStartPoint().getFood();
                 int mostFemaleKangaroo = k.getStartPoint().getFemaleKangaroo();
                 boolean moved = false;
