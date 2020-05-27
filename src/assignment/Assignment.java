@@ -52,6 +52,7 @@ public class Assignment extends Application {
     private int MAXKANGAROO;
     private int noOfRow;
     private int POINTNUMBER;
+    private int noOfColony;
 
     @Override
     public void start(Stage primaryStage) {
@@ -315,7 +316,11 @@ public class Assignment extends Application {
                                                 notEnough.showAndWait();
                                                 return;
                                             }
-
+                                            TextInputDialog colony = new TextInputDialog();
+                                            colony.setTitle("Colony");
+                                            colony.setHeaderText("Enter the number of colony : ");
+                                            noOfColony = Integer.parseInt(colony.getEditor().getText());
+                                            
                                             start();
                                         }
                                     });
@@ -328,6 +333,7 @@ public class Assignment extends Application {
                                         public void handle(ActionEvent e) {
                                             Point start = null;
                                             boolean error = false;
+                                            //Check the gender of kangaroo
                                             if (!genderInput.getText().equalsIgnoreCase("Male")
                                                     && !genderInput.getText().equalsIgnoreCase("Female")
                                                     && !genderInput.getText().equalsIgnoreCase("M")
@@ -345,9 +351,6 @@ public class Assignment extends Application {
                                                             || genderInput.getText().equalsIgnoreCase("Female")) {
                                                         start.setFemaleKangaroo(start.getFemaleKangaroo() + 1);
                                                     }
-                                                    //reduce the size as added 1 kangaroo to the point
-                                                    //Jh: Max Size shouldnt be reduced, should be constant d
-
                                                     break;
                                                 } else if (i == points.size() - 1 && !points.get(i).getId().equals(startPointInput.getText())) {
                                                     error = true;
@@ -587,7 +590,9 @@ public class Assignment extends Application {
 
                                     } else {
                                         if (entry == points.get(current).getPath()) {
+                                            //Reached the maximum of the current point's number of path
                                             current++;
+                                            //move to next point
                                             sourceidinput.clear();
                                             sourceidinput.setText(points.get(current).getId());
                                             entry = 0;
@@ -833,73 +838,6 @@ public class Assignment extends Application {
             id.setFill(Color.RED);
             pathID.add(id);
         }
-//        for (int i = 0; i < points.size(); i++) {
-//
-//            int startX, startY, endX, endY;
-//            if (points.get(i).getPath() != 0) {
-//                startX = x.get(i);
-//                startY = y.get(i);
-//            } else {
-//                continue;
-//            }
-//            for (int j = 0; j < points.get(i).getLink().size(); j++) {
-//                Line l = new Line();
-//                boolean sameLine = false;
-//                endX = points.get(i).getLink().get(j).getX();
-//                endY = points.get(i).getLink().get(j).getY();
-//                for (int k = 0; k < lineUsed.size(); k++) {
-//                    System.out.println("Array: " + Arrays.toString(lineUsed.get(k)));
-//                    System.out.println("Points: " + startX + " " + startY + " " + endX + " " + endY);
-//                    if (lineUsed.get(k)[0] == endX && lineUsed.get(k)[1] == endY
-//                            && lineUsed.get(k)[2] == startX && lineUsed.get(k)[3] == startY) {
-//                        sameLine = true;
-//                        break;
-//                    }
-//                }
-//                
-//
-//                //Check whether line already exists between 2 points
-//                System.out.println("test : " + sameLine);
-//
-//                if (sameLine) {
-//                    startX -= 5;
-//                    startY -= 5;
-//                    endX -= 15;
-//                    endY -= 15;
-//                } else {
-//                    Integer[] temp = new Integer[4];
-//                    temp[0] = startX;
-//                    temp[1] = startY;
-//                    temp[2] = endX;
-//                    temp[3] = endY;
-//                    lineUsed.add(temp);
-//                    startX += 5;
-//                    startY += 5;
-//                    endX += 15;
-//                    endY += 15;
-//                }
-//
-//                l.setStartX(startX);
-//                l.setStartY(startY);
-//                l.setEndX(endX);
-//                l.setEndY(endY);
-//                l.setVisible(true);
-//                line.add(l);
-//
-//                double midPointX = (l.getStartX() + l.getEndX()) / 2 - 5;
-//                double midPointY = (l.getStartY() + l.getEndY()) / 2 + 5;
-//                Text id = new Text();
-//            }
-//            System.out.println("pathtablelist size" + pathtablelist.size());
-
-//        }
-//        Button startSimulation = new Button("Start Simulation");
-//        startSimulation.setOnAction(new EventHandler<ActionEvent>() {
-//                                        @Override
-//                                        public void handle(ActionEvent e) {
-//                                            start();
-//                                        }
-//                                    });
         Pane pane = new Pane();
         pane.getChildren().addAll(line);
         pane.getChildren().addAll(figure);
