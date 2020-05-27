@@ -329,7 +329,8 @@ public class Assignment extends Application {
                                             colony.setHeaderText("Enter the threshold for colony : ");
                                             colony.showAndWait();
                                             colonyThreshold = Integer.parseInt(colony.getEditor().getText());
-
+                                            //add move here
+                                            
                                             start();
                                         }
                                     });
@@ -893,8 +894,9 @@ public class Assignment extends Application {
         if (k.getGender().equalsIgnoreCase("M") || k.getGender().equalsIgnoreCase("Male")) {
 
             //Check whether the kangaroo already in a colony            
-            if (!k.isIsColonised()) {
+            if (!k.isColonised()) {
                 int colonyThreshold = 3;
+                //why go set the colony threshold
                 double mostFoodLeft = k.getStartPoint().getFood();
                 int mostFemaleKangaroo = k.getStartPoint().getFemaleKangaroo();
                 boolean moved = false;
@@ -953,15 +955,19 @@ public class Assignment extends Application {
                                 if (isPointColonised) {
                                     isAbleToJump = k.getNoOfFood() - foodNeededToJump >= pathTableList.get(i)
                                             .getP().getCurrentKangarooNumber();
+                                    //if the point is colonised, the newcomer kangaroo need to distribute 1 of his food
+                                    //to all of the kangaroo at the point
                                 } else {
                                     isAbleToJump = k.getNoOfFood() >= foodNeededToJump;
+                                    //if not colonised, if the kangaroo has more or equal food
+                                    //then the kangaroo can jump
                                 }
                                 if (female > mostFemaleKangaroo && isAbleToJump) {
                                     mostFemaleKangaroo = female;
                                     moved = true;
                                     tempI = i;
                                     //To be deducted from the kangaroo pouch at (moved) condition
-                                    mostFoodLeft = 0 - foodNeededToJump;
+                                    mostFoodLeft = -foodNeededToJump;
 
                                 }
                             }
