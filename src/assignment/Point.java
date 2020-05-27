@@ -49,7 +49,7 @@ public class Point {
     public void setIsColonised(boolean isColonised) {
         this.isColonised = isColonised;
     }
-        
+
     public int getFemaleKangaroo() {
         return femaleKangaroo;
     }
@@ -57,7 +57,7 @@ public class Point {
     public int getCurrentKangarooNumber() {
         return femaleKangaroo + maleKangaroo;
     }
-                    
+
     public void setFemaleKangaroo(int femaleKangaroo) {
         this.femaleKangaroo = femaleKangaroo;
     }
@@ -179,6 +179,10 @@ public class Point {
 //    }
     public boolean linkFull() {
         return count == path || pathid.size() == path || link.size() == path;
+    }
+
+    public String toString2() {
+        return "Current point: " + id;
     }
 
     public String toString() {
