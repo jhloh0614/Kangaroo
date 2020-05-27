@@ -847,12 +847,14 @@ public class Assignment extends Application {
             //Determine is there any possible moves there
             boolean isMoveable = false;
             for (int i = 0; i < kangarooList.size(); i++) {
+                isMoveable = false;
                 Kangaroo k = kangarooList.get(i);
                 System.out.println("Kangaroo " + i + " gender is " + k.getGender());
                 boolean kangarooMoves = move(k);
                 if (kangarooMoves) {
                     isMoveable = true;
                 }
+                
                 System.out.println("Kangaroo " + i + " isMoveable = " + isMoveable );
             }
             //If no moves then output result
