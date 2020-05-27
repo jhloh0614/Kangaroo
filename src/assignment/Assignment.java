@@ -310,15 +310,23 @@ public class Assignment extends Application {
                                             for (int i = 0; i < points.size(); i++) {
                                                 if (points.get(i).getId().equals(startPointInput.getText())) {
                                                     start = points.get(i);
-                                                    points.get(i).setSize(points.get(i).getSize() - 1);
+                                                    if(genderInput.getText().equalsIgnoreCase("M") ||
+                                                            genderInput.getText().equalsIgnoreCase("Male")){
+                                                        start.setMaleKangaroo(start.getMaleKangaroo() + 1);
+                                                        
+                                                    }
+                                                    else{
+                                                        start.setFemaleKangaroo(start.getFemaleKangaroo() + 1);
+                                                    }
                                                     //reduce the size as added 1 kangaroo to the point
                                                     //Jh: Max Size shouldnt be reduced, should be constant d
+                                                    
                                                     break;
                                                 } else if (i == points.size() - 1 && !points.get(i).getId().equals(startPointInput.getText())) {
                                                     error = true;
                                                 }
                                             }
-                                            if (start.getSize() < 0) {
+                                            if (start.getCurrentKangarooNumber() > start.getSize()) {
                                                 //Check whether the number of kangaroo on each point exceed the maximum or not                                                
                                                 Alert exceed = new Alert(Alert.AlertType.WARNING);
                                                 exceed.setTitle("Error");
