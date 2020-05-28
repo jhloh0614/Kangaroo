@@ -223,8 +223,9 @@ public class Assignment extends Application {
 
                     private int current = 0;
                     //index of current point
-                    
+
                     private int entry = 0;
+
                     //entry is the number of path for each point
                     @Override
                     public void handle(ActionEvent e) {
@@ -236,7 +237,7 @@ public class Assignment extends Application {
                             TableColumn link = new TableColumn("Linked to");
                             TableColumn pathid = new TableColumn("Path ID");
                             TableColumn obstacleheight = new TableColumn("Obstacle Height");
-                            
+
                             sourceid.setCellValueFactory(new PropertyValueFactory<PointPath, String>("source"));
                             link.setCellValueFactory(new PropertyValueFactory<PointPath, Point>("p"));
                             pathid.setCellValueFactory(new PropertyValueFactory<PointPath, String>("pathid"));
@@ -369,7 +370,7 @@ public class Assignment extends Application {
                                                     error = true;
                                                 }
                                             }
-                                            if(start == null){
+                                            if (start == null) {
                                                 Alert invalid = new Alert(Alert.AlertType.WARNING);
                                                 invalid.setTitle("Invalid Input");
                                                 invalid.setHeaderText("Invalid Input");
@@ -625,7 +626,6 @@ public class Assignment extends Application {
             imageView.setPreserveRatio(true);
             Path path = new Path();
             path.getElements().add(new MoveTo(0, 15));
-//            path.getElements().add(new CubicCurveTo());
             PathTransition pathTransition = new PathTransition();
             pathTransition.setDuration(Duration.seconds(3));
             pathTransition.setPath(new Line(300, 55, 0, 55));
@@ -668,7 +668,7 @@ public class Assignment extends Application {
         ArrayList<Integer> y = new ArrayList<>();
         ArrayList<Color> color = new ArrayList<>();
         ArrayList<Integer[]> lineUsed = new ArrayList<>();
-        
+
         int[][] pointsCoord = new int[20][2];
         ArrayList<Integer> usedCoord = new ArrayList<>();
         color.add(Color.BLUEVIOLET);
@@ -706,7 +706,6 @@ public class Assignment extends Application {
             }
 
         }
-
 
         for (int i = 0; i < points.size(); i++) {
             //Assigning coordinates to each points with randomly selected coordinates from array.
@@ -746,16 +745,17 @@ public class Assignment extends Application {
             sp.getChildren().addAll(c);
             sp.getChildren().addAll(rt);
             sp.getChildren().addAll(t);
-            if(c.getCenterX() <=  1000){
+            System.out.println("centre x at  " + i + " " + c.getCenterX());
+            System.out.println("centre y at  " + i + " " + c.getCenterY());
+            if (c.getCenterX() <= 1000) {
                 leftOrRight.add(0);
-            }
-            else{
+            } else {
                 leftOrRight.add(1);
             }
             figure.add(sp);
             circle.add(c);
         }
-        System.out.println(leftOrRight.toString());
+        System.out.println("left or right : " + leftOrRight.toString());
         for (int i = 0; i < pathTableList.size(); i++) {
             int startX, startY, endX, endY;
             Line l = new Line();
@@ -772,8 +772,8 @@ public class Assignment extends Application {
             endX = pathTableList.get(i).getP().getX();
             endY = pathTableList.get(i).getP().getY();
             for (int k = 0; k < lineUsed.size(); k++) {
-                System.out.println("Array: " + Arrays.toString(lineUsed.get(k)));
-                System.out.println("Points: " + startX + " " + startY + " " + endX + " " + endY);
+//                System.out.println("Array: " + Arrays.toString(lineUsed.get(k)));
+//                System.out.println("Points: " + startX + " " + startY + " " + endX + " " + endY);
                 if (lineUsed.get(k)[0] == endX && lineUsed.get(k)[1] == endY
                         && lineUsed.get(k)[2] == startX && lineUsed.get(k)[3] == startY) {
                     sameLine = true;
@@ -814,10 +814,34 @@ public class Assignment extends Application {
             id.setFill(Color.RED);
             pathID.add(id);
         }
+        Image image[] = new Image[2];
+        try {
+            image[0] = new Image(new FileInputStream("Kangaroo-Left.gif"));
+            image[1] = new Image(new FileInputStream("Kangaroo-Right.gif"));
+        } catch (FileNotFoundException e) {
+            System.out.println("File Not Found");
+        }
+        ImageView iv[] = new ImageView[2];
+        iv[0] = new ImageView(image[0]);
+        iv[0].setFitWidth(200);
+        iv[0].setFitHeight(200);
+        iv[1] = new ImageView(image[1]);
+        iv[1].setFitWidth(200);
+        iv[1].setFitHeight(200);
+        Path path = new Path();
+        PathTransition pt = new PathTransition();
+        path.getElements().add(new MoveTo(0, 15));
+        pt.setDuration(Duration.seconds(3));
+        pt.setPath(new Line(300, 55, 0, 55));
+        pt.setNode(iv[0]);
+        pt.setCycleCount(Timeline.INDEFINITE);
+        pt.play();
+        
         Pane pane = new Pane();
         pane.getChildren().addAll(line);
         pane.getChildren().addAll(figure);
         pane.getChildren().addAll(pathID);
+        pane.getChildren().addAll(iv[0], iv[1]);
         Stage stage = new Stage();
         stage.setMaximized(true);
 
@@ -839,30 +863,34 @@ public class Assignment extends Application {
                 k.setNoOfFood(k.getStartPoint().getFood());
                 k.getStartPoint().setFood(0);
             }
-            System.out.println("Kangaroo at point: " + k.getStartPoint().toString2() + " has food: " 
-                    + k.getNoOfFood() + " point left food: "+k.getStartPoint().getFood());
+//            System.out.println("Kangaroo at point: " + k.getStartPoint().toString2() + " has food: " 
+//                    + k.getNoOfFood() + " point left food: "+k.getStartPoint().getFood());
         }
 
         while (true) {
             //Determine is there any possible moves there
+
             boolean isMoveable = false;
-            for (int i = 0; i < kangarooList.size(); i++) {           
+            for (int i = 0; i < kangarooList.size(); i++) {
                 Kangaroo k = kangarooList.get(i);
-                System.out.println("Kangaroo " + i + " gender is " + k.getGender());
+//                System.out.println("Kangaroo " + i + " gender is " + k.getGender());
                 boolean kangarooMoves = move(k);
                 if (kangarooMoves) {
+                    for (int j = 0; j < line.size(); j++) {
+
+                    }
                     isMoveable = true;
                 }
-                
-                System.out.println("Kangaroo " + i + " kangarooMoves = " + kangarooMoves );
+
+//                System.out.println("Kangaroo " + i + " kangarooMoves = " + kangarooMoves );
             }
             //If no moves then output result
             if (!isMoveable) {
-                System.out.println("Number of colonies: "+sumOfColony);
+                System.out.println("Number of colonies: " + sumOfColony);
                 for (int i = 0; i < kangarooList.size(); i++) {
                     Kangaroo k = kangarooList.get(i);
-                    System.out.println("Kangaroo test: "+k.getCurrentPoint().toString2() +
-                            " Gender: "+k.getGender()+" Food in pouch: "+k.getNoOfFood());
+                    System.out.println("Kangaroo test: " + k.getCurrentPoint().toString2()
+                            + " Gender: " + k.getGender() + " Food in pouch: " + k.getNoOfFood());
                 }
                 break;
             }
@@ -889,8 +917,8 @@ public class Assignment extends Application {
                 break;
             }
         }
-        System.out.println("isFoodAvailableOnMap: "+isFoodAvailableOnMap);
-        if(k.getGender().equalsIgnoreCase("F") || k.getGender().equalsIgnoreCase("Female")){
+//        System.out.println("isFoodAvailableOnMap: "+isFoodAvailableOnMap);
+        if (k.getGender().equalsIgnoreCase("F") || k.getGender().equalsIgnoreCase("Female")) {
             return false;
         }
 
@@ -1007,14 +1035,14 @@ public class Assignment extends Application {
                     if (!isFoodAvailableOnMap) {
                         //The point does not have a colony yet
                         if (!p.isIsColonised()) {
-                            System.out.println(p.toString2()+ " kangaroo count: "+p.getCurrentKangarooNumber());
+//                            System.out.println(p.toString2()+ " kangaroo count: "+p.getCurrentKangarooNumber());
                             if (p.getCurrentKangarooNumber() == colonyThreshold) {
                                 p.setIsColonised(true);
                                 sumOfColony++;
                                 k.setColony(p);
                                 for (int i = 0; i < kangarooList.size(); i++) {
                                     Kangaroo tempK = kangarooList.get(i);
-                                    if(tempK.getCurrentPoint().equals(p)){
+                                    if (tempK.getCurrentPoint().equals(p)) {
                                         tempK.setColonised(true);
                                         tempK.setColony(p);
                                     }
@@ -1043,9 +1071,9 @@ public class Assignment extends Application {
                         k.setNoOfFood(foodAvailable + k.getNoOfFood());
                         p.setFood(foodAvailable - k.getNoOfFood());
                     }
-                    System.out.println("Kangaroo at "+k.getCurrentPoint().toString2());
-                    System.out.println("Kangaroo Food: "+k.getNoOfFood());
-                    System.out.println("Point food: "+k.getCurrentPoint().getFood());
+//                    System.out.println("Kangaroo at "+k.getCurrentPoint().toString2());
+//                    System.out.println("Kangaroo Food: "+k.getNoOfFood());
+//                    System.out.println("Point food: "+k.getCurrentPoint().getFood());
                     return true;
                 } else {
 
