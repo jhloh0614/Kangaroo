@@ -1048,6 +1048,7 @@ public class Assignment extends Application {
 
                     //There are no more food on the map
 //                    if (!isFoodAvailableOnMap) {
+
                     //The point does not have a colony yet
                     if (!p.isIsColonised()) {
 //                            System.out.println(p.toString2()+ " kangaroo count: "+p.getCurrentKangarooNumber());
@@ -1063,8 +1064,10 @@ public class Assignment extends Application {
                                 }
                             }
                         }
-                    } else {
+                    } else { //The point already have colony
+                        //Set kangaroo to the colony point and set to colonised
                         k.setColony(p);
+                        k.setColonised(true);
                     }
 //                    }
 
