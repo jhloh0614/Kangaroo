@@ -856,7 +856,7 @@ public class Assignment extends Application {
         Scene scene = new Scene(pane);
         stage.setScene(scene);
 
-        //testing for start run
+        //Start run
         //Kangaroo take food from starting point and keep in pouch
         for (int i = 0; i < kangarooList.size(); i++) {
             Kangaroo k = kangarooList.get(i);
@@ -959,6 +959,7 @@ public class Assignment extends Application {
                                         double foodLeftOnPoint = pathTableList.get(i).getP().getFood() - foodNeededToJump;
                                         
                                         //Testing for colony when map still got food
+                                        //Seems ok
                                         boolean isAbleToJump = true;
                                         boolean isPointColonised = pathTableList.get(i).getP().isIsColonised();
                                         if (isPointColonised) {
