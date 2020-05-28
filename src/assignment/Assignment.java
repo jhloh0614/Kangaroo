@@ -194,6 +194,8 @@ public class Assignment extends Application {
                             }
                         }
                         if (Integer.parseInt(pathinput.getText()) >= POINTNUMBER) {
+                            //Check whether path exceed point or not
+                            //Max path for n point is n-1
                             Alert exceeded = new Alert(Alert.AlertType.WARNING);
                             exceeded.setTitle("Error");
                             exceeded.setHeaderText("Number of path should be less than total number of points which is " + POINTNUMBER);
@@ -225,8 +227,8 @@ public class Assignment extends Application {
                     //index of current point
 
                     private int entry = 0;
-
                     //entry is the number of path for each point
+                    
                     @Override
                     public void handle(ActionEvent e) {
                         stage.close();
@@ -333,7 +335,6 @@ public class Assignment extends Application {
                                             colony.setHeaderText("Enter the threshold for colony : ");
                                             colony.showAndWait();
                                             colonyThreshold = Integer.parseInt(colony.getEditor().getText());
-                                            //add move here
 
                                             start();
                                         }
@@ -491,6 +492,12 @@ public class Assignment extends Application {
                                             if (points.get(current).getLink().get(i).equals(path1.getP())) {
                                                 repeat = true;
                                                 break;
+                                            }
+                                        }
+                                        for (int i = 0; i < pathTableList.size(); i++) {
+                                            if(pathTableList.get(i).getPathid().equals(pathtable_pathid)){
+                                                repeat = true;
+                                                false;
                                             }
                                         }
                                         if (repeat) {
