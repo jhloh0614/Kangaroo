@@ -497,7 +497,7 @@ public class Assignment extends Application {
                                         for (int i = 0; i < pathTableList.size(); i++) {
                                             if(pathTableList.get(i).getPathid().equals(pathtable_pathid)){
                                                 repeat = true;
-                                                false;
+                                                break;
                                             }
                                         }
                                         if (repeat) {
