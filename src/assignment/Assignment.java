@@ -228,7 +228,7 @@ public class Assignment extends Application {
 
                     private int entry = 0;
                     //entry is the number of path for each point
-                    
+
                     @Override
                     public void handle(ActionEvent e) {
                         stage.close();
@@ -495,7 +495,7 @@ public class Assignment extends Application {
                                             }
                                         }
                                         for (int i = 0; i < pathTableList.size(); i++) {
-                                            if(pathTableList.get(i).getPathid().equals(pathtable_pathid)){
+                                            if (pathTableList.get(i).getPathid().equals(pathtable_pathid)) {
                                                 repeat = true;
                                                 break;
                                             }
@@ -843,7 +843,7 @@ public class Assignment extends Application {
         pt.setNode(iv[0]);
         pt.setCycleCount(Timeline.INDEFINITE);
         pt.play();
-        
+
         Pane pane = new Pane();
         pane.getChildren().addAll(line);
         pane.getChildren().addAll(figure);
@@ -933,8 +933,6 @@ public class Assignment extends Application {
         if (k.getGender().equalsIgnoreCase("M") || k.getGender().equalsIgnoreCase("Male")) {
             //Check whether the kangaroo already in a colony            
             if (!k.isColonised()) {
-                //why go set the colony threshold
-                //i simply put d, because idk where u put ma, now know d lo
                 double mostFoodLeft = -999;
                 int mostFemaleKangaroo = -1;
                 boolean moved = false;
@@ -959,8 +957,17 @@ public class Assignment extends Application {
                                         //If greater than the food needed, then can jump
                                         //Assume the kangaroo can take the destination food even he havent jump
                                         double foodLeftOnPoint = pathTableList.get(i).getP().getFood() - foodNeededToJump;
+                                        
+                                        //Testing for colony when map still got food
+                                        boolean isAbleToJump = true;
+                                        boolean isPointColonised = pathTableList.get(i).getP().isIsColonised();
+                                        if (isPointColonised) {
+                                            isAbleToJump = k.getNoOfFood() + foodLeftOnPoint >= pathTableList.get(i).getP().getCurrentKangarooNumber();
+                                        }
+                                        //
+                                        
                                         //Check for most foodLeft
-                                        if (foodLeftOnPoint > mostFoodLeft) {
+                                        if (foodLeftOnPoint > mostFoodLeft && isAbleToJump) {
                                             mostFoodLeft = foodLeftOnPoint;
                                             equalMostFood = false;
                                             moved = true;
@@ -969,7 +976,7 @@ public class Assignment extends Application {
                                             tempCounter = new ArrayList();
                                             //refresh the list if found another higher food point
                                             tempCounter.add(tempI);
-                                        } else if (foodLeftOnPoint == mostFoodLeft) {
+                                        } else if (foodLeftOnPoint == mostFoodLeft && isAbleToJump) {
                                             //When have multiple points with the same foodLeft
                                             moved = true;
                                             equalMostFood = true;
@@ -1039,26 +1046,26 @@ public class Assignment extends Application {
 //                    p.setSize(p.getSize() - 1);
 
                     //There are no more food on the map
-                    if (!isFoodAvailableOnMap) {
-                        //The point does not have a colony yet
-                        if (!p.isIsColonised()) {
+//                    if (!isFoodAvailableOnMap) {
+                    //The point does not have a colony yet
+                    if (!p.isIsColonised()) {
 //                            System.out.println(p.toString2()+ " kangaroo count: "+p.getCurrentKangarooNumber());
-                            if (p.getCurrentKangarooNumber() == colonyThreshold) {
-                                p.setIsColonised(true);
-                                sumOfColony++;
-                                k.setColony(p);
-                                for (int i = 0; i < kangarooList.size(); i++) {
-                                    Kangaroo tempK = kangarooList.get(i);
-                                    if (tempK.getCurrentPoint().equals(p)) {
-                                        tempK.setColonised(true);
-                                        tempK.setColony(p);
-                                    }
+                        if (p.getCurrentKangarooNumber() == colonyThreshold) {
+                            p.setIsColonised(true);
+                            sumOfColony++;
+                            k.setColony(p);
+                            for (int i = 0; i < kangarooList.size(); i++) {
+                                Kangaroo tempK = kangarooList.get(i);
+                                if (tempK.getCurrentPoint().equals(p)) {
+                                    tempK.setColonised(true);
+                                    tempK.setColony(p);
                                 }
                             }
-                        } else {
-                            k.setColony(p);
                         }
+                    } else {
+                        k.setColony(p);
                     }
+//                    }
 
                     int foodAvailable = (int) mostFoodLeft;
                     if (foodAvailable < 0) {
