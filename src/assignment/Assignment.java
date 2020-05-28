@@ -52,10 +52,9 @@ public class Assignment extends Application {
     private int noOfPoints;
     private TableView table = new TableView();
     static ObservableList<Point> points = FXCollections.observableArrayList();
-    private boolean donesetpoint;
-    private TableView pathtable = new TableView();
+    private TableView pathTable = new TableView();
     private TableView kangarooTable = new TableView();
-    static ObservableList<Point> pathlist = FXCollections.observableArrayList();
+    static ObservableList<Point> pathList = FXCollections.observableArrayList();
     static ObservableList<PointPath> pathTableList = FXCollections.observableArrayList();
     static ObservableList<Kangaroo> kangarooList = FXCollections.observableArrayList();
     private int MAXKANGAROO;
@@ -93,7 +92,7 @@ public class Assignment extends Application {
                 TableColumn food = new TableColumn("No of food");
                 TableColumn size = new TableColumn("Max Kangaroo Size");
                 TableColumn path = new TableColumn("No of Paths Connected");
-                id.setMaxWidth(50);
+                id.setMinWidth(50);
                 food.setMinWidth(150);
                 size.setMinWidth(200);
                 path.setMinWidth(250);
@@ -182,6 +181,7 @@ public class Assignment extends Application {
                         }
                         for (int i = 0, a = points.size(); i < a; i++) {
                             if (points.get(i).getId().equals(idinput.getText())) {
+                                //Check for redundant path ID
                                 Alert redundant = new Alert(Alert.AlertType.WARNING);
                                 redundant.setTitle("Error");
                                 redundant.setHeaderText("Redundant Path ID");
@@ -223,10 +223,9 @@ public class Assignment extends Application {
 
                     private int current = 0;
                     //index of current point
+                    
                     private int entry = 0;
-//                    private boolean twoWay = false;
-
-                    //ensure a 2-way connection
+                    //entry is the number of path for each point
                     @Override
                     public void handle(ActionEvent e) {
                         stage.close();
@@ -237,9 +236,7 @@ public class Assignment extends Application {
                             TableColumn link = new TableColumn("Linked to");
                             TableColumn pathid = new TableColumn("Path ID");
                             TableColumn obstacleheight = new TableColumn("Obstacle Height");
-//                            sourceid.setCellValueFactory(new PropertyValueFactory<Point, String>("id"));
-//                            link.setCellValueFactory(new PropertyValueFactory<Point, LinkedList<Point>>("link"));
-//                            pathid.setCellValueFactory(new PropertyValueFactory<Point, LinkedList<String>>("pathid"));
+                            
                             sourceid.setCellValueFactory(new PropertyValueFactory<PointPath, String>("source"));
                             link.setCellValueFactory(new PropertyValueFactory<PointPath, Point>("p"));
                             pathid.setCellValueFactory(new PropertyValueFactory<PointPath, String>("pathid"));
@@ -250,7 +247,7 @@ public class Assignment extends Application {
                             pathid.setMinWidth(100);
                             obstacleheight.setMinWidth(200);
 
-                            pathtable.setEditable(true);
+                            pathTable.setEditable(true);
 
                             TextField sourceidinput = new TextField();
                             TextField ptconnected = new TextField();
@@ -304,9 +301,9 @@ public class Assignment extends Application {
                                     startPoint.setCellValueFactory(new PropertyValueFactory<Kangaroo, Point>("startPoint"));
                                     gender.setCellValueFactory(new PropertyValueFactory<Kangaroo, String>("gender"));
                                     noOfFood.setCellValueFactory(new PropertyValueFactory<Kangaroo, Integer>("maxPouchFood"));
-                                    startPoint.setMinWidth(200);
-                                    gender.setMinWidth(100);
-                                    noOfFood.setMinWidth(200);
+                                    startPoint.setMinWidth(250);
+                                    gender.setMinWidth(150);
+                                    noOfFood.setMinWidth(250);
 
                                     TextField startPointInput = new TextField();
                                     TextField genderInput = new TextField();
@@ -511,7 +508,7 @@ public class Assignment extends Application {
                                         ptid.clear();
                                         obstacleheightinput.clear();
                                         pathTableList.add(path1);
-                                        pathlist.add(destinationPoint);
+                                        pathList.add(destinationPoint);
                                         entry++;
                                         if (entry == points.get(current).getPath()) {
                                             current++;
@@ -556,8 +553,8 @@ public class Assignment extends Application {
                                 }
                             });
 
-                            pathtable.setItems(pathTableList);
-                            pathtable.getColumns().addAll(sourceid, link, pathid, obstacleheight);
+                            pathTable.setItems(pathTableList);
+                            pathTable.getColumns().addAll(sourceid, link, pathid, obstacleheight);
 
                             pathhb.getChildren().addAll(sourceidinput, ptconnected, ptid,
                                     obstacleheightinput, addpath, ok);
@@ -566,20 +563,20 @@ public class Assignment extends Application {
                             final VBox pathvb = new VBox();
                             pathvb.setSpacing(5);
                             pathvb.setPadding(new Insets(0, 0, 0, 0));
-                            pathvb.getChildren().addAll(pathtable, pathhb);
+                            pathvb.getChildren().addAll(pathTable, pathhb);
 
                             Scene pathscene = new Scene(new Group());
                             ((Group) pathscene.getRoot()).getChildren().addAll(pathvb);
 
                             pathstage.setScene(pathscene);
-                            pathstage.setResizable(false);
+//                            pathstage.setResizable(false);
                             pathstage.show();
 
                             pathstage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                                 @Override
                                 public void handle(WindowEvent t) {
                                     pathTableList.clear();
-                                    pathlist.clear();
+                                    pathList.clear();
                                     pathstage.close();
 
                                 }
@@ -599,7 +596,6 @@ public class Assignment extends Application {
                 Scene scene = new Scene(new Group());
                 ((Group) scene.getRoot()).getChildren().addAll(vbox);
 
-                stage.setResizable(false);
                 stage.setTitle("Point(s) Data");
                 stage.setScene(scene);
                 stage.show();
@@ -672,6 +668,7 @@ public class Assignment extends Application {
         ArrayList<Integer> y = new ArrayList<>();
         ArrayList<Color> color = new ArrayList<>();
         ArrayList<Integer[]> lineUsed = new ArrayList<>();
+        
         int[][] pointsCoord = new int[20][2];
         ArrayList<Integer> usedCoord = new ArrayList<>();
         color.add(Color.BLUEVIOLET);
@@ -686,10 +683,9 @@ public class Assignment extends Application {
         ArrayList<Line> line = new ArrayList<>();
         ArrayList<Pane> figure = new ArrayList<>();
         ArrayList<Text> pathID = new ArrayList<>();
-        int xMaxSize = 1601;
-        int yMaxSize = 801;
+        ArrayList<Integer> leftOrRight = new ArrayList<>();
+        //To determine the points is at left of scene or right
         int radius = 50;
-        int pathlength = 250;
 
         //Assigning coordinates for points into array using ellipse equation
         for (int i = 0, tempX = 200, tempY = 500; i < pointsCoord.length; i++) {
@@ -711,8 +707,6 @@ public class Assignment extends Application {
 
         }
 
-        System.out.println("point size: " + points.size());
-        System.out.println(Arrays.deepToString(pointsCoord));
 
         for (int i = 0; i < points.size(); i++) {
             //Assigning coordinates to each points with randomly selected coordinates from array.
@@ -752,9 +746,16 @@ public class Assignment extends Application {
             sp.getChildren().addAll(c);
             sp.getChildren().addAll(rt);
             sp.getChildren().addAll(t);
+            if(c.getCenterX() <=  1000){
+                leftOrRight.add(0);
+            }
+            else{
+                leftOrRight.add(1);
+            }
             figure.add(sp);
             circle.add(c);
         }
+        System.out.println(leftOrRight.toString());
         for (int i = 0; i < pathTableList.size(); i++) {
             int startX, startY, endX, endY;
             Line l = new Line();
@@ -819,11 +820,10 @@ public class Assignment extends Application {
         pane.getChildren().addAll(pathID);
         Stage stage = new Stage();
         stage.setMaximized(true);
+
         stage.setTitle("Kangaroo");
         Scene scene = new Scene(pane);
-        scene.setFill(Color.YELLOWGREEN);
         stage.setScene(scene);
-        //or move can put here
 
         //testing for start run
         //Kangaroo take food from starting point and keep in pouch
