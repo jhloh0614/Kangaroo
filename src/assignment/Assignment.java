@@ -1,10 +1,8 @@
 package assignment;
 
-import com.sun.javafx.geom.Curve;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Random;
@@ -37,6 +35,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
@@ -756,7 +755,7 @@ public class Assignment extends Application {
             figure.add(sp);
             circle.add(c);
         }
-        
+
         for (int i = 0; i < pathTableList.size(); i++) {
             int startX, startY, endX, endY;
             Line l = new Line();
@@ -892,38 +891,50 @@ public class Assignment extends Application {
 //                System.out.println("Kangaroo " + i + " gender is " + k.getGender());
                 startPathX = k.getCurrentPoint().getX();
                 startPathY = k.getCurrentPoint().getY();
+                Path p = new Path();
+                p.getElements().add(new MoveTo(startPathX, startPathY));
+                pathTransition.get(i).setPath(p);
                 boolean kangarooMoves = move(k);
                 if (kangarooMoves) {
+                    Path path = new Path();
+                    path.getElements().add(new MoveTo(startPathX, startPathY));
+                    path.getElements().add(new LineTo(k.getCurrentPoint().getX(),
+                            k.getCurrentPoint().getY()));
+                    System.out.println("Kangaroo " + i + " moves from " + startPathX + ", " + startPathY + " to "
+                            + k.getCurrentPoint().getX() + ", " + k.getCurrentPoint().getY());
                     isMoveable = true;
-                    pathTransition.get(i).setPath(new Line(startPathX, startPathY,
-                            k.getCurrentPoint().getX(), k.getCurrentPoint().getY()));
+                    pathTransition.get(i).setPath(path);
                     pathTransition.get(i).setDuration(Duration.seconds(4));
                     pathTransition.get(i).setCycleCount(1);
                     pathTransition.get(i).play();
                 } else {
-                    Integer [] coords = new Integer[2];
+                    Path path = new Path();
+                    
+                    Integer[] coords = new Integer[2];
                     Random random = new Random();
                     coords[0] = k.getCurrentPoint().getX();
                     coords[1] = k.getCurrentPoint().getY();
-                    usedCoords.add(coords);
-                    if(usedCoords.contains(coords)){
+                    if (usedCoords.contains(coords)) {
                         coords[0] -= random.nextInt(20);
                         coords[1] -= random.nextInt(20);
                     }
-                    pathTransition.get(i).setPath(new Line(coords[0],coords[1],coords[0],coords[1]));
+                    usedCoords.add(coords);
+                    path.getElements().add(new MoveTo(coords[0], coords[1]));
+                    path.getElements().add(new LineTo(coords[0],coords[1]));
+                    pathTransition.get(i).setPath(path);
                     pathTransition.get(i).setDuration(Duration.INDEFINITE);
                     pathTransition.get(i).setCycleCount(Timeline.INDEFINITE);
                     pathTransition.get(i).play();
                 }
 
             }
+
             //If no moves then output result
             if (!isMoveable) {
                 System.out.println("Number of colonies: " + sumOfColony);
-                end = true;
                 for (int i = 0; i < kangarooList.size(); i++) {
                     Kangaroo k = kangarooList.get(i);
-                    
+
                     System.out.println("Kangaroo test: " + k.getCurrentPoint().toString2()
                             + " Gender: " + k.getGender() + " Food in pouch: " + k.getNoOfFood());
                 }
@@ -931,8 +942,9 @@ public class Assignment extends Application {
             }
 
         }
-        
+
         stage.show();
+
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent t) {
@@ -940,7 +952,6 @@ public class Assignment extends Application {
                 System.exit(0);
             }
         });
-        
 
     }
 
