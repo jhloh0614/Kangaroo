@@ -17,6 +17,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -822,20 +823,7 @@ public class Assignment extends Application {
             }
         }
         System.out.println("left or right : " + leftOrRight.toString());
-        Image image[] = new Image[2];
-        try {
-            image[0] = new Image(new FileInputStream("Kangaroo-Left.gif"));
-            image[1] = new Image(new FileInputStream("Kangaroo-Right.gif"));
-        } catch (FileNotFoundException e) {
-            System.out.println("File Not Found");
-        }
-        ImageView iv[] = new ImageView[2];
-        iv[0] = new ImageView(image[0]);
-        iv[0].setFitWidth(250);
-        iv[0].setFitHeight(250);
-        iv[1] = new ImageView(image[1]);
-        iv[1].setFitWidth(250);
-        iv[1].setFitHeight(250);
+
 //        Path path = new Path();
 //        PathTransition pt = new PathTransition();
 //        path.getElements().add(new MoveTo(0, 15));
@@ -844,26 +832,26 @@ public class Assignment extends Application {
 //        pt.setNode(iv[0]);
 //        pt.setCycleCount(Timeline.INDEFINITE);
 //        pt.play();
-        ArrayList<PathTransition> pathTransition = new ArrayList<>();
-        for (int i = 0; i < kangarooList.size(); i++) {
-            pathTransition.add(new PathTransition());
-            if (leftOrRight.get(i) == 0) {
-                pathTransition.get(i).setNode(iv[0]);
-            } else {
-                pathTransition.get(i).setNode(iv[1]);
-            }
-        }
         Pane pane = new Pane();
         pane.getChildren().addAll(line);
         pane.getChildren().addAll(figure);
         pane.getChildren().addAll(pathID);
-        pane.getChildren().addAll(iv[0], iv[1]);
+
         Stage stage = new Stage();
         stage.setMaximized(true);
 
         stage.setTitle("Kangaroo");
         Scene scene = new Scene(pane);
         stage.setScene(scene);
+        stage.show();
+
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
 
         //Start run
         //Kangaroo take food from starting point and keep in pouch
@@ -880,52 +868,94 @@ public class Assignment extends Application {
                 k.getStartPoint().setFood(0);
             }
         }
+        Image image[] = new Image[2];
+        try {
+            image[0] = new Image(new FileInputStream("Kangaroo-Left.gif"));
+            image[1] = new Image(new FileInputStream("Kangaroo-Right.gif"));
+        } catch (FileNotFoundException e) {
+            System.out.println("File Not Found");
+        }
+        ImageView iv[] = new ImageView[2];
+        iv[0] = new ImageView(image[0]);
+        iv[0].setFitWidth(250);
+        iv[0].setFitHeight(250);
+        iv[1] = new ImageView(image[1]);
+        iv[1].setFitWidth(250);
+        iv[1].setFitHeight(250);
+        ArrayList<PathTransition> pathTransition = new ArrayList<>();
+        ArrayList<ImageView> kangarooImage = new ArrayList<>();
+//        for (int i = 0; i < kangarooList.size(); i++) {
+//            pathTransition.add(new PathTransition());
+//            if (leftOrRight.get(i) == 0) {
+//                kangarooImage.add(iv[0]);
+//            } else {
+//                kangarooImage.add(iv[1]);
+//            }
+//        }
+        for (int i = 0; i < kangarooList.size(); i++) {
+            pathTransition.add(new PathTransition());
+        }
         ArrayList<Integer[]> usedCoords = new ArrayList<>();
-        boolean end = false;
         while (true) {
             //Determine is there any possible moves there
 
             boolean isMoveable = false;
             for (int i = 0; i < kangarooList.size(); i++) {
                 Kangaroo k = kangarooList.get(i);
+
 //                System.out.println("Kangaroo " + i + " gender is " + k.getGender());
+                Path p;
                 startPathX = k.getCurrentPoint().getX();
                 startPathY = k.getCurrentPoint().getY();
-                Path p = new Path();
-                p.getElements().add(new MoveTo(startPathX, startPathY));
-                pathTransition.get(i).setPath(p);
+                String startPoint = k.getCurrentPoint().getId();
                 boolean kangarooMoves = move(k);
-                if (kangarooMoves) {
-                    Path path = new Path();
-                    path.getElements().add(new MoveTo(startPathX, startPathY));
-                    path.getElements().add(new LineTo(k.getCurrentPoint().getX(),
-                            k.getCurrentPoint().getY()));
-                    System.out.println("Kangaroo " + i + " moves from " + startPathX + ", " + startPathY + " to "
-                            + k.getCurrentPoint().getX() + ", " + k.getCurrentPoint().getY());
-                    isMoveable = true;
-                    pathTransition.get(i).setPath(path);
-                    pathTransition.get(i).setDuration(Duration.seconds(4));
-                    pathTransition.get(i).setCycleCount(1);
-                    pathTransition.get(i).play();
+                ImageView view;
+                if (leftOrRight.get(i) == 0) {
+                    view = new ImageView(image[0]);
+                    view.setFitWidth(250);
+                    view.setFitHeight(250);
                 } else {
-                    Path path = new Path();
-                    
-                    Integer[] coords = new Integer[2];
-                    Random random = new Random();
-                    coords[0] = k.getCurrentPoint().getX();
-                    coords[1] = k.getCurrentPoint().getY();
-                    if (usedCoords.contains(coords)) {
-                        coords[0] -= random.nextInt(20);
-                        coords[1] -= random.nextInt(20);
-                    }
-                    usedCoords.add(coords);
-                    path.getElements().add(new MoveTo(coords[0], coords[1]));
-                    path.getElements().add(new LineTo(coords[0],coords[1]));
-                    pathTransition.get(i).setPath(path);
-                    pathTransition.get(i).setDuration(Duration.INDEFINITE);
-                    pathTransition.get(i).setCycleCount(Timeline.INDEFINITE);
-                    pathTransition.get(i).play();
+                    view = new ImageView(image[1]);
+                    view.setFitWidth(250);
+                    view.setFitHeight(250);
                 }
+                if (kangarooMoves) {
+
+                    endPathX = k.getCurrentPoint().getX();
+                    endPathY = k.getCurrentPoint().getY();
+                    isMoveable = true;
+                    p = new Path();
+                    p.getElements().add(new MoveTo(startPathX, startPathY));
+                    p.getElements().add(new LineTo(endPathX, endPathY));
+                    System.out.println("Kangaroo " + i + " moves from " + startPoint
+                            + " to " + k.getCurrentPoint().getId());
+                    pathTransition.get(i).setNode(view);
+                    pathTransition.get(i).setPath(p);
+                    pathTransition.get(i).setDuration(Duration.seconds(5));
+                    pathTransition.get(i).setCycleCount(1);
+                    pane.getChildren().add(view);
+                } else {
+                    endPathX = k.getCurrentPoint().getX();
+                    endPathY = k.getCurrentPoint().getY();
+                    p = new Path();
+//                    Integer[] coords = new Integer[2];
+//                    Random random = new Random();
+//                    coords[0] = k.getCurrentPoint().getX();
+//                    coords[1] = k.getCurrentPoint().getY();
+//                    if (usedCoords.contains(coords)) {
+//                        coords[0] -= random.nextInt(20);
+//                        coords[1] -= random.nextInt(20);
+//                    }
+//                    usedCoords.add(coords);
+                    p.getElements().add(new MoveTo(startPathX, startPathY));
+                    p.getElements().add(new LineTo(endPathX, endPathY));
+                    pathTransition.get(i).setNode(view);
+                    pathTransition.get(i).setPath(p);
+                    pathTransition.get(i).setDuration(Duration.seconds(4));
+                    pathTransition.get(i).setCycleCount(Timeline.INDEFINITE);
+                    pane.getChildren().add(view);
+                }
+                pathTransition.get(i).play();
 
             }
 
@@ -934,7 +964,6 @@ public class Assignment extends Application {
                 System.out.println("Number of colonies: " + sumOfColony);
                 for (int i = 0; i < kangarooList.size(); i++) {
                     Kangaroo k = kangarooList.get(i);
-
                     System.out.println("Kangaroo test: " + k.getCurrentPoint().toString2()
                             + " Gender: " + k.getGender() + " Food in pouch: " + k.getNoOfFood());
                 }
@@ -943,18 +972,13 @@ public class Assignment extends Application {
 
         }
 
-        stage.show();
-
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent t) {
-                Platform.exit();
-                System.exit(0);
-            }
-        });
-
     }
 
+//    public static PathTransition createPathTransition(Path p, Node n) {
+//        PathTransition pt = new PathTransition();
+//        
+//
+//    }
     public static boolean move(Kangaroo k) {
         //Check for availability of food on map
         boolean isFoodAvailableOnMap = false;
@@ -964,6 +988,8 @@ public class Assignment extends Application {
                 break;
             }
         }
+//        startPathX = k.getCurrentPoint().getX();
+//        startPathY = k.getCurrentPoint().getY();
 //        System.out.println("isFoodAvailableOnMap: "+isFoodAvailableOnMap);
         if (k.getGender().equalsIgnoreCase("F") || k.getGender().equalsIgnoreCase("Female")) {
             return false;
@@ -980,7 +1006,8 @@ public class Assignment extends Application {
                 double foodNeededToJump = 0;
                 ArrayList<Integer> tempCounter = new ArrayList<>();
                 int tempI = -1;
-
+                startPathX = k.getCurrentPoint().getX();
+                startPathY = k.getCurrentPoint().getY();
                 //Check for which point will result in most food after travelling
                 for (int i = 0; i < pathTableList.size(); i++) {
                     if (pathTableList.get(i).getSource().equals(k.getCurrentPoint().getId())) {
@@ -1060,6 +1087,7 @@ public class Assignment extends Application {
                         }
                     }
                 }
+
                 if (moved) {
                     //If have points with equal amount of food
                     if (equalMostFood) {
@@ -1130,17 +1158,25 @@ public class Assignment extends Application {
 //                    System.out.println("Kangaroo at "+k.getCurrentPoint().toString2());
 //                    System.out.println("Kangaroo Food: "+k.getNoOfFood());
 //                    System.out.println("Point food: "+k.getCurrentPoint().getFood());
+//                    endPathX = k.getCurrentPoint().getX();
+//                    endPathY = k.getCurrentPoint().getY();
+
                     return true;
                 } else {
-
+//                    endPathX = startPathX;
+//                    endPathY = startPathY;
                     return false;
                     //To be determined what to do
                 }
             } else {
+//                endPathX = startPathX;
+//                endPathY = startPathY;
                 return false;
             }
 
         } else {
+//            endPathX = startPathX;
+//            endPathY = startPathY;
             return false;
         }
     }
