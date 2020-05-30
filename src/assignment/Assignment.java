@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.PathTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -17,7 +21,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -63,6 +66,7 @@ public class Assignment extends Application {
     private static int colonyThreshold = 0;
     private static int sumOfColony = 0;
     private static int startPathX, startPathY, endPathX, endPathY;
+    private static boolean endRun = false;
 
     @Override
     public void start(Stage primaryStage) {
@@ -854,6 +858,24 @@ public class Assignment extends Application {
         });
 
         //Start run
+        //Timer for food regenerative
+        int delay = 1000;
+        int period = 1000;
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                for (int i = 0; i < points.size(); i++) {
+                    Point p = points.get(i);
+                    p.setFood(p.getFood() + 1);
+                    System.out.println("Point: " + p.getId() + " current food: " + p.getFood());
+
+                }
+                if (endRun) {
+                    timer.cancel();
+                }
+            }
+        }, delay, period);
+
         //Kangaroo take food from starting point and keep in pouch
         for (int i = 0; i < kangarooList.size(); i++) {
             Kangaroo k = kangarooList.get(i);
@@ -868,6 +890,13 @@ public class Assignment extends Application {
                 k.getStartPoint().setFood(0);
             }
         }
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Assignment.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         Image image[] = new Image[2];
         try {
             image[0] = new Image(new FileInputStream("Kangaroo-Left.gif"));
@@ -897,8 +926,8 @@ public class Assignment extends Application {
         }
         ArrayList<Integer[]> usedCoords = new ArrayList<>();
         while (true) {
-            //Determine is there any possible moves there
 
+            //Determine is there any possible moves there
             boolean isMoveable = false;
             for (int i = 0; i < kangarooList.size(); i++) {
                 Kangaroo k = kangarooList.get(i);
@@ -957,6 +986,12 @@ public class Assignment extends Application {
                 }
                 pathTransition.get(i).play();
 
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Assignment.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             }
 
             //If no moves then output result
@@ -967,6 +1002,7 @@ public class Assignment extends Application {
                     System.out.println("Kangaroo test: " + k.getCurrentPoint().toString2()
                             + " Gender: " + k.getGender() + " Food in pouch: " + k.getNoOfFood());
                 }
+                endRun = true;
                 break;
             }
 
