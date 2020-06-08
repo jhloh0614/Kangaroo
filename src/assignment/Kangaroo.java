@@ -36,7 +36,6 @@ public class Kangaroo {
     public void setColony(Point colony) {
         this.colony = colony;
     }
-    
 
     public Point getCurrentPoint() {
         return currentPoint;
