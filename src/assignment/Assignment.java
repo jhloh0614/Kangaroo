@@ -6,10 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.PathTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -21,6 +17,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -66,7 +63,6 @@ public class Assignment extends Application {
     private static int colonyThreshold = 0;
     private static int sumOfColony = 0;
     private static int startPathX, startPathY, endPathX, endPathY;
-    private static boolean endRun = false;
 
     @Override
     public void start(Stage primaryStage) {
@@ -858,24 +854,6 @@ public class Assignment extends Application {
         });
 
         //Start run
-        //Timer for food regenerative
-        int delay = 1000;
-        int period = 1000;
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                for (int i = 0; i < points.size(); i++) {
-                    Point p = points.get(i);
-                    p.setFood(p.getFood() + 1);
-                    System.out.println("Point: " + p.getId() + " current food: " + p.getFood());
-
-                }
-                if (endRun) {
-                    timer.cancel();
-                }
-            }
-        }, delay, period);
-
         //Kangaroo take food from starting point and keep in pouch
         for (int i = 0; i < kangarooList.size(); i++) {
             Kangaroo k = kangarooList.get(i);
@@ -890,27 +868,28 @@ public class Assignment extends Application {
                 k.getStartPoint().setFood(0);
             }
         }
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Assignment.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        Image image[] = new Image[2];
+        Image image[] = new Image[4];
         try {
             image[0] = new Image(new FileInputStream("Kangaroo-Left.gif"));
             image[1] = new Image(new FileInputStream("Kangaroo-Right.gif"));
+            image[2] = new Image(new FileInputStream("Kangaroo-Left-(female).gif"));
+            image[3] = new Image(new FileInputStream("Kangaroo-Right-(female).gif"));
         } catch (FileNotFoundException e) {
             System.out.println("File Not Found");
         }
-        ImageView iv[] = new ImageView[2];
+        ImageView iv[] = new ImageView[4];
         iv[0] = new ImageView(image[0]);
         iv[0].setFitWidth(250);
         iv[0].setFitHeight(250);
         iv[1] = new ImageView(image[1]);
         iv[1].setFitWidth(250);
         iv[1].setFitHeight(250);
+        iv[2] = new ImageView(image[2]);
+        iv[2].setFitWidth(250);
+        iv[2].setFitHeight(250);
+        iv[3] = new ImageView(image[3]);
+        iv[3].setFitWidth(250);
+        iv[3].setFitHeight(250);
         ArrayList<PathTransition> pathTransition = new ArrayList<>();
         ArrayList<ImageView> kangarooImage = new ArrayList<>();
 //        for (int i = 0; i < kangarooList.size(); i++) {
@@ -925,9 +904,10 @@ public class Assignment extends Application {
             pathTransition.add(new PathTransition());
         }
         ArrayList<Integer[]> usedCoords = new ArrayList<>();
-        while (true) {
 
+        while (true) {
             //Determine is there any possible moves there
+
             boolean isMoveable = false;
             for (int i = 0; i < kangarooList.size(); i++) {
                 Kangaroo k = kangarooList.get(i);
@@ -938,18 +918,29 @@ public class Assignment extends Application {
                 startPathY = k.getCurrentPoint().getY();
                 String startPoint = k.getCurrentPoint().getId();
                 boolean kangarooMoves = move(k);
-                ImageView view;
-                if (leftOrRight.get(i) == 0) {
+                ImageView view = new ImageView();
+                if (leftOrRight.get(i) == 0 && (k.getGender().equalsIgnoreCase("Male")
+                        || k.getGender().equalsIgnoreCase("M"))) {
                     view = new ImageView(image[0]);
                     view.setFitWidth(250);
                     view.setFitHeight(250);
-                } else {
+                } else if (leftOrRight.get(i) == 1 && (k.getGender().equalsIgnoreCase("Male")
+                        || k.getGender().equalsIgnoreCase("M"))) {
                     view = new ImageView(image[1]);
+                    view.setFitWidth(250);
+                    view.setFitHeight(250);
+                } else if (leftOrRight.get(i) == 0 && (k.getGender().equalsIgnoreCase("Female")
+                        || k.getGender().equalsIgnoreCase("F"))) {
+                    view = new ImageView(image[2]);
+                    view.setFitWidth(250);
+                    view.setFitHeight(250);
+                } else if (leftOrRight.get(i) == 1 && (k.getGender().equalsIgnoreCase("Female")
+                        || k.getGender().equalsIgnoreCase("F"))) {
+                    view = new ImageView(image[3]);
                     view.setFitWidth(250);
                     view.setFitHeight(250);
                 }
                 if (kangarooMoves) {
-
                     endPathX = k.getCurrentPoint().getX();
                     endPathY = k.getCurrentPoint().getY();
                     isMoveable = true;
@@ -963,51 +954,34 @@ public class Assignment extends Application {
                     pathTransition.get(i).setDuration(Duration.seconds(5));
                     pathTransition.get(i).setCycleCount(1);
                     pane.getChildren().add(view);
+                    kangarooImage.add(view);
                 } else {
-                    endPathX = k.getCurrentPoint().getX();
-                    endPathY = k.getCurrentPoint().getY();
-                    p = new Path();
-//                    Integer[] coords = new Integer[2];
-//                    Random random = new Random();
-//                    coords[0] = k.getCurrentPoint().getX();
-//                    coords[1] = k.getCurrentPoint().getY();
-//                    if (usedCoords.contains(coords)) {
-//                        coords[0] -= random.nextInt(20);
-//                        coords[1] -= random.nextInt(20);
-//                    }
-//                    usedCoords.add(coords);
-                    p.getElements().add(new MoveTo(startPathX, startPathY));
-                    p.getElements().add(new LineTo(endPathX, endPathY));
-                    pathTransition.get(i).setNode(view);
-                    pathTransition.get(i).setPath(p);
-                    pathTransition.get(i).setDuration(Duration.seconds(4));
-                    pathTransition.get(i).setCycleCount(Timeline.INDEFINITE);
+                    view.setX(k.getCurrentPoint().getX() - 150);
+                    view.setY(k.getCurrentPoint().getY() - 150);
                     pane.getChildren().add(view);
                 }
+                System.out.println("kangaroo " + i + " view at " + endPathX + ", " + endPathY);
                 pathTransition.get(i).play();
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Assignment.class.getName()).log(Level.SEVERE, null, ex);
-                }
 
             }
 
             //If no moves then output result
             if (!isMoveable) {
+
                 System.out.println("Number of colonies: " + sumOfColony);
                 for (int i = 0; i < kangarooList.size(); i++) {
                     Kangaroo k = kangarooList.get(i);
                     System.out.println("Kangaroo test: " + k.getCurrentPoint().toString2()
                             + " Gender: " + k.getGender() + " Food in pouch: " + k.getNoOfFood());
                 }
-                endRun = true;
                 break;
             }
 
         }
-
+        Alert end = new Alert(Alert.AlertType.INFORMATION);
+        end.setTitle("Number of colonies");
+        end.setHeaderText("Number of colonies : " + sumOfColony);
+        end.showAndWait();
     }
 
 //    public static PathTransition createPathTransition(Path p, Node n) {
