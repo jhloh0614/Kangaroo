@@ -953,15 +953,17 @@ public class Assignment extends Application {
                     pathTransition.get(i).setPath(p);
                     pathTransition.get(i).setDuration(Duration.seconds(5));
                     pathTransition.get(i).setCycleCount(1);
+                    pathTransition.get(i).play();
                     pane.getChildren().add(view);
                     kangarooImage.add(view);
                 } else {
+                    
                     view.setX(k.getCurrentPoint().getX() - 150);
                     view.setY(k.getCurrentPoint().getY() - 150);
                     pane.getChildren().add(view);
                 }
                 System.out.println("kangaroo " + i + " view at " + endPathX + ", " + endPathY);
-                pathTransition.get(i).play();
+                
 
             }
 
@@ -978,6 +980,18 @@ public class Assignment extends Application {
             }
 
         }
+        String notColonised = "";
+        for (int i = 0; i < kangarooList.size(); i++) {
+            Kangaroo k = kangarooList.get(i);
+            if(!k.isColonised()){
+                notColonised += k.toString() + "\n";
+            }
+        }
+        
+        Alert kangarooLeft = new Alert(Alert.AlertType.INFORMATION);
+        kangarooLeft.setTitle("Kangaroo Left");
+        kangarooLeft.setHeaderText("Kangaroo left : " + notColonised);
+        kangarooLeft.showAndWait();
         Alert end = new Alert(Alert.AlertType.INFORMATION);
         end.setTitle("Number of colonies");
         end.setHeaderText("Number of colonies : " + sumOfColony);
