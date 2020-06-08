@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.PathTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -234,7 +236,7 @@ public class Assignment extends Application {
                     public void handle(ActionEvent e) {
                         stage.close();
                         if (noOfRow == POINTNUMBER) {
-                            Stage pathstage = new Stage();
+                            Stage pathStage = new Stage();
                             HBox pathhb = new HBox();
                             TableColumn sourceid = new TableColumn("Source ID");
                             TableColumn link = new TableColumn("Linked to");
@@ -276,7 +278,7 @@ public class Assignment extends Application {
                             ok.setOnAction(new EventHandler<ActionEvent>() {
                                 @Override
                                 public void handle(ActionEvent e) {
-                                    pathstage.close();
+                                    pathStage.close();
                                     TextInputDialog noOfKangaroo = new TextInputDialog();
                                     noOfKangaroo.setTitle("Number Of Kangaroo(s)");
                                     noOfKangaroo.setHeaderText("Enter the number of Kangaroo");
@@ -337,7 +339,11 @@ public class Assignment extends Application {
                                             colony.showAndWait();
                                             colonyThreshold = Integer.parseInt(colony.getEditor().getText());
 
-                                            start();
+                                            try {
+                                                start();
+                                            } catch (InterruptedException ex) {
+                                                Logger.getLogger(Assignment.class.getName()).log(Level.SEVERE, null, ex);
+                                            }
                                         }
                                     });
                                     Button addInput = new Button("Add");
@@ -423,6 +429,7 @@ public class Assignment extends Application {
                                     Scene kangarooScene = new Scene(new Group());
                                     ((Group) kangarooScene.getRoot()).getChildren().addAll(kangarooVb);
                                     kangarooInputStage.setScene(kangarooScene);
+                                    kangarooInputStage.setTitle("Kangaroo's Data");
                                     kangarooInputStage.show();
                                 }
                             });
@@ -576,17 +583,17 @@ public class Assignment extends Application {
 
                             Scene pathscene = new Scene(new Group());
                             ((Group) pathscene.getRoot()).getChildren().addAll(pathvb);
-
-                            pathstage.setScene(pathscene);
+                            pathStage.setTitle("Path's Data");
+                            pathStage.setScene(pathscene);
 //                            pathstage.setResizable(false);
-                            pathstage.show();
+                            pathStage.show();
 
-                            pathstage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                            pathStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                                 @Override
                                 public void handle(WindowEvent t) {
                                     pathTableList.clear();
                                     pathList.clear();
-                                    pathstage.close();
+                                    pathStage.close();
 
                                 }
                             });
@@ -667,7 +674,7 @@ public class Assignment extends Application {
 
     }
 
-    public static void start() {
+    public static void start() throws InterruptedException {
 
         point = new Point2D[points.size() + 1][points.size() + 1];
         LinkedList<Circle> circle = new LinkedList<>();
@@ -808,12 +815,21 @@ public class Assignment extends Application {
 
             double midPointX = (l.getStartX() + l.getEndX()) / 2 - 5;
             double midPointY = (l.getStartY() + l.getEndY()) / 2 + 5;
+            double heightMidPointX = (l.getStartX() + l.getEndX() + 25) / 2 - 5;
+            double heightMidPointY = (l.getStartY() + l.getEndY() + 25) / 2 + 5;
             Text id = new Text(pathTableList.get(i).getPathid());
+
+            Text height = new Text(String.valueOf(pathTableList.get(i).getObstacleheight()));
+            height.setX(heightMidPointX);
+            height.setY(heightMidPointY);
+            height.setFont(Font.font("Verdana", 20));
+            height.setFill(Color.BLUEVIOLET);
             id.setX(midPointX);
             id.setY(midPointY);
             id.setFont(Font.font("Verdana", 20));
             id.setFill(Color.RED);
             pathID.add(id);
+            pathID.add(height);
         }
         for (int i = 0; i < kangarooList.size(); i++) {
             if (kangarooList.get(i).getStartPoint().getX() <= 1000) {
@@ -961,7 +977,7 @@ public class Assignment extends Application {
                         view.setY(k.getCurrentPoint().getY() - 150);
                         pane.getChildren().add(view);
                     }
-                    
+
                 }
                 System.out.println("kangaroo " + i + " view at " + endPathX + ", " + endPathY);
 
@@ -980,6 +996,31 @@ public class Assignment extends Application {
             }
 
         }
+        ImageView legend1 = iv[0];
+        ImageView legend2 = iv[2];
+        legend1.setFitWidth(100);
+        legend1.setFitHeight(100);
+        legend1.setX(1650);
+        legend1.setY(0);
+        legend2.setFitWidth(100);
+        legend2.setFitHeight(100);
+        legend2.setX(1650);
+        legend2.setY(150);
+        Text male = new Text("Male Kangaroo");
+        male.setX(1750);
+        male.setY(70);
+        Text female = new Text("Female Kangaroo");
+        female.setX(1750);
+        female.setY(230);
+        Text ID = new Text("Path ID");
+        ID.setX(1750);
+        ID.setY(330);
+        ID.setFill(Color.RED);
+        Text obsHeight = new Text("Obstacle Height");
+        obsHeight.setX(1750);
+        obsHeight.setY(360);
+        obsHeight.setFill(Color.BLUEVIOLET);
+        pane.getChildren().addAll(iv[0], iv[2], male, female, ID, obsHeight);
         String notColonised = "\n";
         for (int i = 0; i < kangarooList.size(); i++) {
             Kangaroo k = kangarooList.get(i);
@@ -988,7 +1029,6 @@ public class Assignment extends Application {
                         + " " + k.getNoOfFood() + "\n";
             }
         }
-        
         Alert end = new Alert(Alert.AlertType.INFORMATION);
         end.setTitle("Number of colonies");
         end.setHeaderText("Number of colonies : " + sumOfColony);
@@ -998,6 +1038,7 @@ public class Assignment extends Application {
         kangarooLeft.setHeaderText("Kangaroo left : " + notColonised);
         kangarooLeft.showAndWait();
     }
+
     public static boolean move(Kangaroo k) {
         //Check for availability of food on map
         boolean isFoodAvailableOnMap = false;
