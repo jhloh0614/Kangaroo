@@ -903,7 +903,7 @@ public class Assignment extends Application {
         for (int i = 0; i < kangarooList.size(); i++) {
             pathTransition.add(new PathTransition());
         }
-        ArrayList<Integer[]> usedCoords = new ArrayList<>();
+        ArrayList<Integer> movedKangaroo = new ArrayList<>();
 
         while (true) {
             //Determine is there any possible moves there
@@ -911,8 +911,6 @@ public class Assignment extends Application {
             boolean isMoveable = false;
             for (int i = 0; i < kangarooList.size(); i++) {
                 Kangaroo k = kangarooList.get(i);
-
-//                System.out.println("Kangaroo " + i + " gender is " + k.getGender());
                 Path p;
                 startPathX = k.getCurrentPoint().getX();
                 startPathY = k.getCurrentPoint().getY();
@@ -956,14 +954,17 @@ public class Assignment extends Application {
                     pathTransition.get(i).play();
                     pane.getChildren().add(view);
                     kangarooImage.add(view);
+                    movedKangaroo.add(i);
                 } else {
-                    
-                    view.setX(k.getCurrentPoint().getX() - 150);
-                    view.setY(k.getCurrentPoint().getY() - 150);
+                    if (k.getGender().equalsIgnoreCase("F") || k.getGender().equalsIgnoreCase("Female")) {
+                        view.setX(k.getCurrentPoint().getX() - 150);
+                        view.setY(k.getCurrentPoint().getY() - 150);
+                    }else{
+                        
+                    }
                     pane.getChildren().add(view);
                 }
                 System.out.println("kangaroo " + i + " view at " + endPathX + ", " + endPathY);
-                
 
             }
 
@@ -980,29 +981,24 @@ public class Assignment extends Application {
             }
 
         }
-        String notColonised = "";
+        String notColonised = "\n";
         for (int i = 0; i < kangarooList.size(); i++) {
             Kangaroo k = kangarooList.get(i);
-            if(!k.isColonised()){
-                notColonised += k.toString() + "\n";
+            if (!k.isColonised()) {
+                notColonised += k.getCurrentPoint().getId() + " " + k.getGender()
+                        + " " + k.getNoOfFood() + "\n";
             }
         }
         
-        Alert kangarooLeft = new Alert(Alert.AlertType.INFORMATION);
-        kangarooLeft.setTitle("Kangaroo Left");
-        kangarooLeft.setHeaderText("Kangaroo left : " + notColonised);
-        kangarooLeft.showAndWait();
         Alert end = new Alert(Alert.AlertType.INFORMATION);
         end.setTitle("Number of colonies");
         end.setHeaderText("Number of colonies : " + sumOfColony);
         end.showAndWait();
+        Alert kangarooLeft = new Alert(Alert.AlertType.INFORMATION);
+        kangarooLeft.setTitle("Kangaroo Left");
+        kangarooLeft.setHeaderText("Kangaroo left : " + notColonised);
+        kangarooLeft.showAndWait();
     }
-
-//    public static PathTransition createPathTransition(Path p, Node n) {
-//        PathTransition pt = new PathTransition();
-//        
-//
-//    }
     public static boolean move(Kangaroo k) {
         //Check for availability of food on map
         boolean isFoodAvailableOnMap = false;
@@ -1012,9 +1008,6 @@ public class Assignment extends Application {
                 break;
             }
         }
-//        startPathX = k.getCurrentPoint().getX();
-//        startPathY = k.getCurrentPoint().getY();
-//        System.out.println("isFoodAvailableOnMap: "+isFoodAvailableOnMap);
         if (k.getGender().equalsIgnoreCase("F") || k.getGender().equalsIgnoreCase("Female")) {
             return false;
         }
