@@ -959,10 +959,9 @@ public class Assignment extends Application {
                     if (k.getGender().equalsIgnoreCase("F") || k.getGender().equalsIgnoreCase("Female")) {
                         view.setX(k.getCurrentPoint().getX() - 150);
                         view.setY(k.getCurrentPoint().getY() - 150);
-                    }else{
-                        
+                        pane.getChildren().add(view);
                     }
-                    pane.getChildren().add(view);
+                    
                 }
                 System.out.println("kangaroo " + i + " view at " + endPathX + ", " + endPathY);
 
