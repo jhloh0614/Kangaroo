@@ -81,6 +81,13 @@ public class Assignment extends Application {
                 Stage stage = new Stage();
                 try {
                     noOfPoints = Integer.parseInt(td1.getEditor().getText());
+                    if (noOfPoints > 20) {
+                        Alert alert = new Alert(Alert.AlertType.WARNING);
+                        alert.setTitle("Attention!");
+                        alert.setHeaderText("Exceeded number of points");
+                        alert.showAndWait();
+                        return;
+                    }
                 } catch (NumberFormatException e) {
                     Alert exception = new Alert(Alert.AlertType.WARNING);
                     exception.setTitle("Error Message");
