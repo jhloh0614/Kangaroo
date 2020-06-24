@@ -121,37 +121,7 @@ public class Assignment extends Application {
                     }
                 }
                 );
-//                food.setCellFactory(TextFieldTableCell.forTableColumn());
-//                food.setOnEditCommit(
-//                        new EventHandler<CellEditEvent<Point, String>>() {
-//                    @Override
-//                    public void handle(CellEditEvent<Point, String> t) {
-//                        Integer val = Integer.parseInt(t.getNewValue());
-//                        ((Point) t.getTableView().getItems().get(
-//                                t.getTablePosition().getRow())).setFood(val);
-//                    }
-//                }
-//                );
-//                size.setCellFactory(TextFieldTableCell.forTableColumn());
-//                size.setOnEditCommit(
-//                        new EventHandler<CellEditEvent<Point,String>>(){
-//                            @Override
-//                            public void handle(CellEditEvent<Point,String>t){
-//                                ((Point)t.getTableView().getItems().get(
-//                                t.getTablePosition().getRow())).setSize(Integer.parseInt(t.getNewValue()));
-//                            }
-//                        }
-//                );
-//                path.setCellFactory(TextFieldTableCell.forTableColumn());
-//                path.setOnEditCommit(
-//                        new EventHandler<CellEditEvent<Point,String>>(){
-//                            @Override
-//                            public void handle(CellEditEvent<Point,String>t){
-//                                ((Point)t.getTableView().getItems().get(
-//                                t.getTablePosition().getRow())).setPath(Integer.parseInt(t.getNewValue()));
-//                            }
-//                        }
-//                );
+
                 TextField idinput = new TextField();
                 TextField foodinput = new TextField();
                 TextField sizeinput = new TextField();
@@ -1208,13 +1178,15 @@ public class Assignment extends Application {
                         p.setFood(0);
 
                     } else if (foodAvailable < k.getMaxPouchFood()) {
-                        //to calculate the food needed to get back to max no of food
-                        int foodAdded = k.getMaxPouchFood() - k.getNoOfFood();
-                        foodAvailable = foodAvailable - foodAdded;
-                        //add kangaroo's current food with the food available in the point
-                        k.setNoOfFood(foodAdded + k.getNoOfFood());
-                        //the food left in the point after kangaroo take
-                        p.setFood(foodAvailable);
+                        int currentFoodInPouch = k.getNoOfFood()+foodAvailable;
+                        if(currentFoodInPouch>k.getMaxPouchFood()){
+                            int excessFood = currentFoodInPouch - k.getMaxPouchFood();
+                            k.setNoOfFood(k.getMaxPouchFood());
+                            p.setFood(excessFood);
+                        }else{
+                            k.setNoOfFood(currentFoodInPouch);
+                            p.setFood(0);
+                        }
                     } else {
                         k.setNoOfFood(foodAvailable + k.getNoOfFood());
                         p.setFood(foodAvailable - k.getNoOfFood());
