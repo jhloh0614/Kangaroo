@@ -1178,13 +1178,13 @@ public class Assignment extends Application {
                         p.setFood(0);
 
                     } else if (foodAvailable < k.getMaxPouchFood()) {
-                        int currentFoodInPouch = k.getNoOfFood()+foodAvailable;
-                        if(currentFoodInPouch>k.getMaxPouchFood()){
-                            int excessFood = currentFoodInPouch - k.getMaxPouchFood();
+                        int foodToAdd = k.getNoOfFood()+foodAvailable;
+                        if(foodToAdd>k.getMaxPouchFood()){
+                            int excessFood = foodToAdd - k.getMaxPouchFood();
                             k.setNoOfFood(k.getMaxPouchFood());
                             p.setFood(excessFood);
                         }else{
-                            k.setNoOfFood(currentFoodInPouch);
+                            k.setNoOfFood(foodToAdd);
                             p.setFood(0);
                         }
                     } else {
