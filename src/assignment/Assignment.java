@@ -1177,19 +1177,16 @@ public class Assignment extends Application {
                         k.setNoOfFood(k.getNoOfFood() + foodAvailable);
                         p.setFood(0);
 
-                    } else if (foodAvailable < k.getMaxPouchFood()) {
-                        int foodToAdd = k.getNoOfFood()+foodAvailable;
-                        if(foodToAdd>k.getMaxPouchFood()){
+                    } else {
+                        int foodToAdd = k.getNoOfFood() + foodAvailable;
+                        if (foodToAdd > k.getMaxPouchFood()) {
                             int excessFood = foodToAdd - k.getMaxPouchFood();
                             k.setNoOfFood(k.getMaxPouchFood());
                             p.setFood(excessFood);
-                        }else{
+                        } else {
                             k.setNoOfFood(foodToAdd);
                             p.setFood(0);
                         }
-                    } else {
-                        k.setNoOfFood(foodAvailable + k.getNoOfFood());
-                        p.setFood(foodAvailable - k.getNoOfFood());
                     }
 //                    System.out.println("Kangaroo at "+k.getCurrentPoint().toString2());
 //                    System.out.println("Kangaroo Food: "+k.getNoOfFood());
